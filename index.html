@@ -1,157 +1,706 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>APEX GHOST PROTOCOL</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07050b" />
+  <meta name="description" content="APEX Ghost Protocol — The Witness Network. Join. Receive missions. Become infrastructure." />
+  <title>APEX Ghost Protocol — The Witness Network</title>
 
-<style>
-:root {
-  --gold: #f5c46b;
-  --dark: #050505;
-  --glass: rgba(255,255,255,0.06);
-}
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ctext y='50' x='8' font-size='46'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E">
 
-* {
-  box-sizing: border-box;
-  font-family: Inter, system-ui, sans-serif;
-}
+  <style>
+    :root{
+      --bg:#05040a;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.12);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.70);
+      --dim:rgba(255,255,255,.55);
+      --gold:#f6c25b;
+      --gold2:#ffdf9a;
+      --accent:#8f7bff;
+      --ok:#56f39a;
+      --danger:#ff5b7a;
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,200,120,0.08), transparent 60%),
-    radial-gradient(circle at 70% 80%, rgba(120,180,255,0.06), transparent 60%),
-    #050505;
-  color: #eaeaea;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+      --shadow: 0 20px 60px rgba(0,0,0,.55);
+      --shadow2: 0 14px 40px rgba(0,0,0,.45);
+      --radius: 22px;
+      --radius2: 16px;
+    }
 
-.container {
-  max-width: 720px;
-  padding: 40px;
-  background: var(--glass);
-  border-radius: 18px;
-  backdrop-filter: blur(18px);
-  box-shadow: 0 0 60px rgba(0,0,0,0.8);
-  text-align: center;
-  animation: rise 1.2s ease-out;
-}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 30% 15%, rgba(246,194,91,.16), transparent 60%),
+                  radial-gradient(900px 700px at 80% 25%, rgba(143,123,255,.14), transparent 55%),
+                  linear-gradient(180deg, #04030a 0%, #05040a 45%, #04030a 100%);
+      overflow-x:hidden;
+    }
 
-@keyframes rise {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+    #stars{
+      position:fixed; inset:0;
+      z-index:-3;
+      width:100%; height:100%;
+      opacity:.9;
+    }
 
-.ghost {
-  font-size: 48px;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
-}
+    .fog{
+      position:fixed; inset:-30%;
+      z-index:-2;
+      background:
+        radial-gradient(600px 500px at 20% 20%, rgba(246,194,91,.18), transparent 60%),
+        radial-gradient(700px 520px at 85% 35%, rgba(143,123,255,.18), transparent 60%);
+      filter: blur(40px);
+      animation: drift 18s ease-in-out infinite alternate;
+      opacity:.85;
+      pointer-events:none;
+    }
+    @keyframes drift{
+      from{ transform: translate3d(-2%, -1%, 0) scale(1.02); }
+      to  { transform: translate3d( 2%,  1%, 0) scale(1.05); }
+    }
 
-h1 {
-  letter-spacing: 3px;
-  margin: 10px 0 6px;
-}
+    .grain{
+      position:fixed; inset:0;
+      z-index:-1;
+      pointer-events:none;
+      opacity:.16;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
 
-.sub {
-  opacity: 0.7;
-  letter-spacing: 1px;
-  font-size: 12px;
-}
+    .wrap{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 16px 90px;
+    }
 
-.rule {
-  margin: 24px 0;
-  line-height: 1.6;
-}
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 0 16px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      user-select:none;
+    }
+    .sig{
+      width:44px;height:44px;
+      border-radius:14px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow2);
+      position:relative;
+      overflow:hidden;
+    }
+    .sig::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(40px 40px at 30% 30%, rgba(246,194,91,.55), transparent 60%),
+                  radial-gradient(48px 48px at 70% 70%, rgba(143,123,255,.55), transparent 60%);
+      filter: blur(10px);
+      opacity:.55;
+    }
+    .sig span{ position:relative; font-size:22px }
+    .brand b{
+      letter-spacing:.18em;
+      font-size:12px;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.78);
+    }
+    .brand small{
+      display:block;
+      font-size:11px;
+      color:rgba(255,255,255,.52);
+      margin-top:2px;
+      letter-spacing:.06em;
+    }
 
-.rule span {
-  display: block;
-  margin: 6px 0;
-}
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .chip{
+      font-size:12px;
+      font-weight:800;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: rgba(255,255,255,.76);
+    }
 
-.highlight {
-  color: var(--gold);
-}
+    .btn{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      color:var(--text);
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight:800;
+      font-size:13px;
+      letter-spacing:.03em;
+      box-shadow: var(--shadow2);
+      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      text-decoration:none;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); filter: brightness(1.07); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
 
-button {
-  margin-top: 20px;
-  padding: 14px 28px;
-  background: transparent;
-  color: var(--gold);
-  border: 1px solid var(--gold);
-  border-radius: 40px;
-  font-size: 14px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(246,194,91,.28), rgba(143,123,255,.18));
+      border-color: rgba(246,194,91,.40);
+      box-shadow: 0 18px 60px rgba(246,194,91,.15), 0 18px 60px rgba(143,123,255,.10);
+    }
+    .btn.gold{
+      background: linear-gradient(135deg, rgba(246,194,91,.34), rgba(255,255,255,.06));
+      border-color: rgba(246,194,91,.48);
+    }
 
-button:hover {
-  background: var(--gold);
-  color: #000;
-  box-shadow: 0 0 20px rgba(245,196,107,0.6);
-}
+    .hero{
+      margin-top: 8px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(246,194,91,.22), transparent 55%),
+        radial-gradient(800px 700px at 90% 20%, rgba(143,123,255,.20), transparent 55%);
+      filter: blur(18px);
+      opacity:.9;
+      pointer-events:none;
+    }
 
-.log {
-  margin-top: 28px;
-  font-size: 13px;
-  opacity: 0.75;
-  min-height: 20px;
-}
+    .heroInner{
+      position:relative;
+      padding: 30px 16px 22px;
+      display:grid;
+      gap:18px;
+    }
 
-.footer {
-  margin-top: 32px;
-  font-size: 11px;
-  opacity: 0.4;
-}
-</style>
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 8px 12px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.76);
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:11px;
+    }
+    .kicker i{
+      width:8px; height:8px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, var(--gold2), var(--gold));
+      box-shadow: 0 0 18px rgba(246,194,91,.45);
+      display:inline-block;
+    }
+
+    h1{
+      margin: 10px 0 8px;
+      line-height: 1.04;
+      letter-spacing: -0.02em;
+      font-size: 44px;
+    }
+    .grad{
+      background: linear-gradient(90deg, var(--gold2), var(--gold), #ffffff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+      text-shadow: 0 0 30px rgba(246,194,91,.12);
+    }
+
+    .sub{
+      color: rgba(255,255,255,.78);
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 72ch;
+    }
+
+    .pillRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .pill{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: rgba(255,255,255,.78);
+      font-weight:800;
+      font-size: 12.5px;
+      letter-spacing:.01em;
+    }
+    .pill.gold{
+      border-color: rgba(246,194,91,.30);
+      background: rgba(246,194,91,.08);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      align-items:start;
+      margin-top: 16px;
+    }
+
+    .panel{
+      border-radius: var(--radius2);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      padding: 16px;
+    }
+    .panel h3{
+      margin:0 0 8px;
+      font-size: 13px;
+      letter-spacing:.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+    }
+    .panel p{
+      margin:0;
+      color: rgba(255,255,255,.72);
+      line-height:1.55;
+      font-size: 13.5px;
+    }
+
+    label{
+      font-size:12px;
+      letter-spacing:.10em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.64);
+      font-weight:900;
+      display:block;
+      margin-bottom:8px;
+    }
+    input[type="email"], input[type="text"]{
+      width:100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.92);
+      font-size: 14px;
+      outline:none;
+    }
+    input:focus{ border-color: rgba(246,194,91,.38); background: rgba(255,255,255,.08); }
+
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .msg{
+      display:none;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      font-size: 13px;
+      color: rgba(255,255,255,.82);
+      margin-top:10px;
+    }
+    .msg.ok{ border-color: rgba(86,243,154,.28); background: rgba(86,243,154,.08); }
+    .msg.bad{ border-color: rgba(255,91,122,.28); background: rgba(255,91,122,.08); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .card{
+      grid-column: span 4;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow: var(--shadow2);
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(420px 260px at 20% 20%, rgba(246,194,91,.10), transparent 55%),
+                  radial-gradient(420px 280px at 90% 70%, rgba(143,123,255,.10), transparent 60%);
+      filter: blur(18px);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card > *{ position:relative }
+    .icon{
+      width: 42px; height: 42px;
+      border-radius: 14px;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.12);
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+    .card h2{ margin:0 0 10px; font-size: 16px; }
+    .card p{ margin:0; color: rgba(255,255,255,.70); line-height:1.6; font-size: 13.5px; }
+
+    .faq{
+      margin-top: 18px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    details{ border-top:1px solid rgba(255,255,255,.10); padding: 14px 16px; }
+    details:first-child{ border-top:none; }
+    summary{
+      cursor:pointer;
+      font-weight:900;
+      color: rgba(255,255,255,.86);
+      list-style:none;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    details p{ margin:10px 0 0; color: rgba(255,255,255,.68); line-height:1.6; font-size: 13.5px; max-width: 92ch; }
+
+    footer{
+      margin-top: 22px;
+      display:flex;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+      color: rgba(255,255,255,.54);
+      font-size: 12px;
+      letter-spacing:.03em;
+      align-items:center;
+    }
+    .mini{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .link{
+      text-decoration:none;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.70);
+    }
+    .link:hover{ border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.86); }
+
+    .float{ animation: float 6s ease-in-out infinite; }
+    @keyframes float{ 0%,100%{ transform: translateY(0px); } 50%{ transform: translateY(-6px); } }
+
+    @media (max-width: 860px){
+      h1{ font-size: 36px; }
+      .layout{ grid-template-columns: 1fr; }
+      .card{ grid-column: span 12; }
+      .wrap{ padding-bottom: 70px; }
+    }
+  </style>
 </head>
 
 <body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="fog" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-<div class="container">
-  <div class="ghost">👻</div>
+  <div class="wrap">
 
-  <h1>APEX GHOST PROTOCOL</h1>
-  <div class="sub">THE WITNESS NETWORK</div>
+    <div class="top">
+      <a class="brand" href="#" aria-label="APEX Ghost Protocol">
+        <div class="sig float"><span>👻</span></div>
+        <div>
+          <b>APEX</b>
+          <small>Ghost Protocol • The Witness Network</small>
+        </div>
+      </a>
 
-  <div class="rule">
-    <span>When truth becomes scarce,</span>
-    <span class="highlight">witnesses become infrastructure.</span>
-    <br>
-    <span>No mining.</span>
-    <span>No noise.</span>
-    <span class="highlight">Just confirmation.</span>
+      <div class="actions">
+        <span class="chip" id="liveChip">LIVE • REGISTRATION</span>
+        <button class="btn" id="installBtn" style="display:none;">📲 Install</button>
+        <a class="btn gold" id="founderBtn" href="https://apex888.gumroad.com/l/ixnydz" target="_blank" rel="noreferrer">⚡ Founder Pass</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="heroInner">
+        <div>
+          <div class="kicker"><i></i> witness infrastructure</div>
+          <h1><span class="grad">GHOST PROTOCOL</span><br/>THE WITNESS NETWORK</h1>
+          <div class="sub">
+            When truth becomes scarce, <b>witnesses become infrastructure</b>.<br/>
+            A distributed network of <b>human presence</b>, <b>agreement</b>, and <b>proof</b> — quiet, lightweight, and undeniable.
+          </div>
+
+          <div class="pillRow">
+            <div class="pill gold"><b>No mining.</b> No noise. Just confirmation.</div>
+            <div class="pill">1-tap confirmations</div>
+            <div class="pill">presence proofs</div>
+            <div class="pill">consensus snapshots</div>
+            <div class="pill">timestamped record</div>
+            <div class="pill">boring by design</div>
+          </div>
+        </div>
+
+        <div class="layout">
+          <div class="panel">
+            <h3>WHAT YOU DO</h3>
+            <p>
+              You will receive “missions.” Each mission is a tiny confirmation:
+              <b>yes/no</b>, <b>agree/disagree</b>, <b>present/not present</b>.
+              Many independent confirmations create a durable record.
+            </p>
+          </div>
+
+          <div class="panel">
+            <h3>REGISTER NOW</h3>
+
+            <form id="registerForm" autocomplete="on">
+              <label for="name">Name (optional)</label>
+              <input id="name" name="name" type="text" placeholder="Your name" inputmode="text" />
+
+              <div style="height:12px"></div>
+
+              <label for="email">Email (required)</label>
+              <input id="email" name="email" type="email" placeholder="you@domain.com" inputmode="email" required />
+
+              <div style="height:12px"></div>
+
+              <div class="row">
+                <button class="btn primary" type="submit" style="flex:1;">👻 Register</button>
+                <button class="btn" type="button" id="missionBtn">🛰️ Send Mission 0</button>
+              </div>
+
+              <div class="msg ok" id="okMsg">✅ Registered. Mission 0 is ready. Check your email draft and send.</div>
+              <div class="msg bad" id="badMsg">⚠️ Enter a valid email.</div>
+
+              <div style="height:10px"></div>
+
+              <div style="color:rgba(255,255,255,.62); font-size:12.5px; line-height:1.5;">
+                Zero spam. One signal. Registration sends your details to the operator inbox.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="Capabilities">
+      <div class="card">
+        <div class="icon">🧿</div>
+        <h2>Presence Proof</h2>
+        <p>Light “I was here” attestations. No battery drain. No background mining. Just witness.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🧾</div>
+        <h2>Consensus Snapshots</h2>
+        <p>Many taps converge into a timestamped record. Disagreement is preserved, not erased.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⛓️</div>
+        <h2>Receipts for Reality</h2>
+        <p>Audit-friendly outputs: what was believed, when, and by how many independent witnesses.</p>
+      </div>
+    </section>
+
+    <section class="faq" aria-label="FAQ">
+      <details open>
+        <summary>What is Ghost Protocol in one sentence?</summary>
+        <p>A network where humans do tiny confirmations that become a durable timestamped record of consensus.</p>
+      </details>
+      <details>
+        <summary>Do I need to install an app?</summary>
+        <p>No. This is a web protocol. You can optionally “Install” it as an app (PWA) from the browser.</p>
+      </details>
+      <details>
+        <summary>How does registration work?</summary>
+        <p>Registration captures your details and opens an email draft to the operator inbox. You press send. Done.</p>
+      </details>
+      <details>
+        <summary>What is Founder Pass?</summary>
+        <p>Optional paid access for early missions and priority channel. You control the link.</p>
+      </details>
+    </section>
+
+    <footer>
+      <div class="mini">
+        <span>© <span id="yr"></span> APEX</span>
+        <span>•</span>
+        <span>GHOST PROTOCOL</span>
+        <span>•</span>
+        <span style="color:rgba(246,194,91,.82)">Own the record.</span>
+      </div>
+
+      <div class="mini">
+        <a class="link" href="https://github.com/kawal393" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="link" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+      </div>
+    </footer>
   </div>
 
-  <button onclick="witness()">JOIN AS WITNESS</button>
+  <script>
+    // ====== YEAR ======
+    document.getElementById("yr").textContent = new Date().getFullYear();
 
-  <div class="log" id="log"></div>
+    // ====== REGISTRATION (NO EDITS NEEDED) ======
+    const OPERATOR_EMAIL = "apexghost@proton.me"; // where signups go (you can keep this)
 
-  <div class="footer">
-    APEX · Own the Record
-  </div>
-</div>
+    const form = document.getElementById("registerForm");
+    const okMsg = document.getElementById("okMsg");
+    const badMsg = document.getElementById("badMsg");
+    const missionBtn = document.getElementById("missionBtn");
 
-<script>
-let joined = false;
+    function openMailTo(name, email){
+      const subject = encodeURIComponent("GHOST PROTOCOL — NEW WITNESS REGISTRATION");
+      const body = encodeURIComponent(
+`NEW WITNESS REGISTRATION
 
-function witness() {
-  const log = document.getElementById("log");
+Name: ${name || "(not provided)"}
+Email: ${email || "(not provided)"}
+Timestamp: ${new Date().toISOString()}
 
-  if (!joined) {
-    joined = true;
-    log.innerText = "Witness registered. Presence acknowledged.";
-  } else {
-    log.innerText = "Presence confirmed again. Ledger updated.";
-  }
-}
-</script>
+Mission 0 requested.
+`
+      );
+      window.location.href = `mailto:${OPERATOR_EMAIL}?subject=${subject}&body=${body}`;
+    }
 
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      okMsg.style.display = "none";
+      badMsg.style.display = "none";
+
+      const name = (document.getElementById("name").value || "").trim();
+      const email = (document.getElementById("email").value || "").trim();
+
+      if (!email || !email.includes("@")) {
+        badMsg.style.display = "block";
+        return;
+      }
+
+      // Save locally so the device is "registered"
+      try {
+        const payload = { name, email, ts: new Date().toISOString() };
+        const key = "ghost_witness_registry";
+        const list = JSON.parse(localStorage.getItem(key) || "[]");
+        list.push(payload);
+        localStorage.setItem(key, JSON.stringify(list));
+        localStorage.setItem("ghost_last_witness", JSON.stringify(payload));
+      } catch {}
+
+      okMsg.style.display = "block";
+      openMailTo(name, email);
+    });
+
+    missionBtn.addEventListener("click", () => {
+      const name = (document.getElementById("name").value || "").trim();
+      const email = (document.getElementById("email").value || "").trim();
+      if (!email || !email.includes("@")) {
+        badMsg.style.display = "block";
+        return;
+      }
+      openMailTo(name, email);
+    });
+
+    // ====== PWA INSTALL PROMPT ======
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-flex";
+    });
+
+    installBtn.addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = "none";
+    });
+
+    // ====== STARFIELD ======
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d", { alpha: true });
+
+    let W, H, DPR;
+    const stars = [];
+    const STAR_COUNT = 240;
+
+    function resize(){
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      W = Math.floor(window.innerWidth * DPR);
+      H = Math.floor(window.innerHeight * DPR);
+      canvas.width = W;
+      canvas.height = H;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+      initStars();
+    }
+
+    function initStars(){
+      stars.length = 0;
+      for(let i=0;i<STAR_COUNT;i++){
+        stars.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          r: (Math.random()*1.2 + 0.3) * DPR,
+          v: (Math.random()*0.35 + 0.06) * DPR,
+          a: Math.random()*0.6 + 0.25,
+          hue: Math.random() < 0.5 ? "warm" : "cool"
+        });
+      }
+    }
+
+    let t = 0;
+    function draw(){
+      t += 0.0035;
+
+      ctx.clearRect(0,0,W,H);
+
+      // faint nebula wash
+      const g = ctx.createRadialGradient(W*0.25, H*0.15, 0, W*0.25, H*0.15, Math.max(W,H)*0.9);
+      g.addColorStop(0, "rgba(246,194,91,0.10)");
+      g.addColorStop(0.35, "rgba(143,123,255,0.07)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0,0,W,H);
+
+      for(const s of stars){
+        s.y += s.v;
+        if(s.y > H + 20) { s.y = -20; s.x = Math.random()*W; }
+        const tw = 0.35 + 0.65*Math.abs(Math.sin(t + s.x*0.002));
+        ctx.globalAlpha = s.a * tw;
+
+        ctx.fillStyle = s.hue === "warm" ? "rgba(255,225,160,1)" : "rgba(205,210,255,1)";
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      requestAnimationFrame(draw);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    draw();
+  </script>
 </body>
 </html>
