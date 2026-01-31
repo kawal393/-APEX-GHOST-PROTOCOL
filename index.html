@@ -2,699 +2,847 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#07050b" />
-  <meta name="description" content="APEX Ghost Protocol — The Witness Network. Join. Receive missions. Become infrastructure." />
-  <title>APEX Ghost Protocol — The Witness Network</title>
-
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Ctext y='50' x='8' font-size='46'%3E%F0%9F%91%BB%3C/text%3E%3C/svg%3E">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>👻 APEX — Ghost Protocol: The Witness Network</title>
+  <meta name="description" content="Ghost Protocol is a distributed witness network for human presence, agreement, and proof. No mining. No noise. Just confirmation." />
+  <meta name="theme-color" content="#0a0712" />
 
   <style>
     :root{
-      --bg:#05040a;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --line:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.70);
-      --dim:rgba(255,255,255,.55);
-      --gold:#f6c25b;
+      --bg:#05030a;
+      --bg2:#0b0716;
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.09);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --faint: rgba(255,255,255,.55);
+      --gold:#f7c86a;
       --gold2:#ffdf9a;
-      --accent:#8f7bff;
-      --ok:#56f39a;
-      --danger:#ff5b7a;
-
-      --shadow: 0 20px 60px rgba(0,0,0,.55);
-      --shadow2: 0 14px 40px rgba(0,0,0,.45);
-      --radius: 22px;
-      --radius2: 16px;
+      --violet:#7b61ff;
+      --cyan:#58d1ff;
+      --danger:#ff5a7a;
+      --ok:#57ffbf;
+      --shadow: 0 30px 80px rgba(0,0,0,.65);
+      --radius: 26px;
+      --radius2: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background: radial-gradient(1200px 800px at 30% 15%, rgba(246,194,91,.16), transparent 60%),
-                  radial-gradient(900px 700px at 80% 25%, rgba(143,123,255,.14), transparent 55%),
-                  linear-gradient(180deg, #04030a 0%, #05040a 45%, #04030a 100%);
+      font-family: var(--sans);
+      background:
+        radial-gradient(1200px 900px at 65% 15%, rgba(255,208,110,.16), transparent 55%),
+        radial-gradient(1000px 800px at 15% 25%, rgba(120,96,255,.14), transparent 60%),
+        radial-gradient(1100px 900px at 40% 95%, rgba(88,209,255,.10), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      color: var(--text);
       overflow-x:hidden;
     }
 
-    #stars{
-      position:fixed; inset:0;
-      z-index:-3;
-      width:100%; height:100%;
-      opacity:.9;
-    }
-
-    .fog{
-      position:fixed; inset:-30%;
-      z-index:-2;
+    /* starfield canvas */
+    #stars{position:fixed; inset:0; z-index:0; opacity:.95}
+    #fog{position:fixed; inset:-20vmax; z-index:1; pointer-events:none;
       background:
-        radial-gradient(600px 500px at 20% 20%, rgba(246,194,91,.18), transparent 60%),
-        radial-gradient(700px 520px at 85% 35%, rgba(143,123,255,.18), transparent 60%);
+        radial-gradient(circle at 20% 30%, rgba(255,200,106,.18), transparent 40%),
+        radial-gradient(circle at 70% 20%, rgba(120,96,255,.18), transparent 45%),
+        radial-gradient(circle at 55% 75%, rgba(88,209,255,.16), transparent 45%);
       filter: blur(40px);
-      animation: drift 18s ease-in-out infinite alternate;
-      opacity:.85;
-      pointer-events:none;
-    }
-    @keyframes drift{
-      from{ transform: translate3d(-2%, -1%, 0) scale(1.02); }
-      to  { transform: translate3d( 2%,  1%, 0) scale(1.05); }
-    }
-
-    .grain{
-      position:fixed; inset:0;
-      z-index:-1;
-      pointer-events:none;
-      opacity:.16;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-    }
-
-    .wrap{
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 18px 16px 90px;
-    }
-
-    .top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 10px 0 16px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      text-decoration:none;
-      user-select:none;
-    }
-    .sig{
-      width:44px;height:44px;
-      border-radius:14px;
-      display:grid; place-items:center;
-      background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow2);
-      position:relative;
-      overflow:hidden;
-    }
-    .sig::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(40px 40px at 30% 30%, rgba(246,194,91,.55), transparent 60%),
-                  radial-gradient(48px 48px at 70% 70%, rgba(143,123,255,.55), transparent 60%);
-      filter: blur(10px);
+      mix-blend-mode: screen;
+      animation: drift 14s ease-in-out infinite alternate;
       opacity:.55;
     }
-    .sig span{ position:relative; font-size:22px }
-    .brand b{
-      letter-spacing:.18em;
-      font-size:12px;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.78);
-    }
-    .brand small{
-      display:block;
-      font-size:11px;
-      color:rgba(255,255,255,.52);
-      margin-top:2px;
-      letter-spacing:.06em;
+    @keyframes drift{
+      0%{transform:translate3d(-2%, -1%,0) scale(1.02)}
+      100%{transform:translate3d(2%, 1%,0) scale(1.05)}
     }
 
-    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .chip{
-      font-size:12px;
-      font-weight:800;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.05);
-      color: rgba(255,255,255,.76);
+    .wrap{position:relative; z-index:2; max-width:1100px; margin:0 auto; padding:28px 18px 90px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:10px 6px 18px;
     }
-
-    .btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      color:var(--text);
-      padding: 12px 14px;
-      border-radius: 14px;
-      cursor:pointer;
-      font-weight:800;
-      font-size:13px;
-      letter-spacing:.03em;
-      box-shadow: var(--shadow2);
-      transition: transform .18s ease, border-color .18s ease, filter .18s ease;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      text-decoration:none;
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .mark{
+      width:44px; height:44px; border-radius:14px;
+      background: radial-gradient(circle at 30% 25%, rgba(255,223,154,.35), rgba(255,255,255,.06) 55%),
+                  linear-gradient(135deg, rgba(255,200,106,.22), rgba(120,96,255,.16));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      display:grid; place-items:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .mark::after{
+      content:"";
+      position:absolute; inset:-80%;
+      background: conic-gradient(from 180deg, transparent, rgba(255,200,106,.55), transparent);
+      animation: spin 6s linear infinite;
+      opacity:.7;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .mark span{
+      position:relative; z-index:1;
+      font-size:22px;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.6));
+    }
+    .brand .txt{line-height:1.05}
+    .brand .txt .a{font-weight:800; letter-spacing:.16em; font-size:12px; color: rgba(255,255,255,.75)}
+    .brand .txt .b{font-weight:800; font-size:14px}
+    .pill{
+      display:flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      font-size:12px;
+      color: rgba(255,255,255,.72);
       user-select:none;
     }
-    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); filter: brightness(1.07); }
-    .btn:active{ transform: translateY(0px) scale(.99); }
-
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(246,194,91,.28), rgba(143,123,255,.18));
-      border-color: rgba(246,194,91,.40);
-      box-shadow: 0 18px 60px rgba(246,194,91,.15), 0 18px 60px rgba(143,123,255,.10);
-    }
-    .btn.gold{
-      background: linear-gradient(135deg, rgba(246,194,91,.34), rgba(255,255,255,.06));
-      border-color: rgba(246,194,91,.48);
-    }
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok); box-shadow:0 0 18px rgba(87,255,191,.65)}
+    .sep{opacity:.4}
+    .pill strong{color: rgba(255,255,255,.9); font-weight:700}
 
     .hero{
-      margin-top: 8px;
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
+      margin-top:12px;
+      padding:22px 0 8px;
     }
-    .hero::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(1200px 700px at 20% 10%, rgba(246,194,91,.22), transparent 55%),
-        radial-gradient(800px 700px at 90% 20%, rgba(143,123,255,.20), transparent 55%);
-      filter: blur(18px);
-      opacity:.9;
-      pointer-events:none;
-    }
-
-    .heroInner{
-      position:relative;
-      padding: 30px 16px 22px;
-      display:grid;
-      gap:18px;
-    }
-
-    .kicker{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding: 8px 12px;
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.76);
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      font-size:11px;
-    }
-    .kicker i{
-      width:8px; height:8px; border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, var(--gold2), var(--gold));
-      box-shadow: 0 0 18px rgba(246,194,91,.45);
-      display:inline-block;
-    }
-
-    h1{
-      margin: 10px 0 8px;
-      line-height: 1.04;
-      letter-spacing: -0.02em;
-      font-size: 44px;
-    }
-    .grad{
-      background: linear-gradient(90deg, var(--gold2), var(--gold), #ffffff);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color: transparent;
-      text-shadow: 0 0 30px rgba(246,194,91,.12);
-    }
-
-    .sub{
-      color: rgba(255,255,255,.78);
-      font-size: 15px;
-      line-height: 1.65;
-      max-width: 72ch;
-    }
-
-    .pillRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top: 12px;
-    }
-    .pill{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: rgba(255,255,255,.78);
-      font-weight:800;
-      font-size: 12.5px;
-      letter-spacing:.01em;
-    }
-    .pill.gold{
-      border-color: rgba(246,194,91,.30);
-      background: rgba(246,194,91,.08);
-    }
-
-    .layout{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 16px;
-      align-items:start;
-      margin-top: 16px;
-    }
-
-    .panel{
-      border-radius: var(--radius2);
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
-      padding: 16px;
-    }
-    .panel h3{
-      margin:0 0 8px;
-      font-size: 13px;
-      letter-spacing:.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.72);
-    }
-    .panel p{
-      margin:0;
-      color: rgba(255,255,255,.72);
-      line-height:1.55;
-      font-size: 13.5px;
-    }
-
-    label{
-      font-size:12px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.64);
-      font-weight:900;
-      display:block;
-      margin-bottom:8px;
-    }
-    input[type="email"], input[type="text"]{
-      width:100%;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.92);
-      font-size: 14px;
-      outline:none;
-    }
-    input:focus{ border-color: rgba(246,194,91,.38); background: rgba(255,255,255,.08); }
-
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .msg{
-      display:none;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      font-size: 13px;
-      color: rgba(255,255,255,.82);
-      margin-top:10px;
-    }
-    .msg.ok{ border-color: rgba(86,243,154,.28); background: rgba(86,243,154,.08); }
-    .msg.bad{ border-color: rgba(255,91,122,.28); background: rgba(255,91,122,.08); }
-
     .grid{
       display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 16px;
-      margin-top: 18px;
+      grid-template-columns: 1.15fr .85fr;
+      gap:18px;
+      align-items:stretch;
     }
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr; }
+    }
+
     .card{
-      grid-column: span 4;
       border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
       border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      box-shadow: var(--shadow2);
-      padding: 18px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
       position:relative;
       overflow:hidden;
     }
     .card::before{
       content:"";
       position:absolute; inset:-2px;
-      background: radial-gradient(420px 260px at 20% 20%, rgba(246,194,91,.10), transparent 55%),
-                  radial-gradient(420px 280px at 90% 70%, rgba(143,123,255,.10), transparent 60%);
-      filter: blur(18px);
-      opacity:.9;
+      background:
+        radial-gradient(900px 500px at 35% 15%, rgba(255,200,106,.22), transparent 55%),
+        radial-gradient(700px 500px at 75% 25%, rgba(120,96,255,.20), transparent 60%),
+        radial-gradient(900px 600px at 55% 90%, rgba(88,209,255,.16), transparent 60%);
+      opacity:.65;
+      filter: blur(10px);
       pointer-events:none;
     }
-    .card > *{ position:relative }
-    .icon{
-      width: 42px; height: 42px;
-      border-radius: 14px;
-      display:grid; place-items:center;
-      background: rgba(0,0,0,.18);
-      border: 1px solid rgba(255,255,255,.12);
-      margin-bottom: 12px;
-      font-size: 20px;
-    }
-    .card h2{ margin:0 0 10px; font-size: 16px; }
-    .card p{ margin:0; color: rgba(255,255,255,.70); line-height:1.6; font-size: 13.5px; }
+    .card > *{position:relative; z-index:1}
 
-    .faq{
-      margin-top: 18px;
-      border-radius: var(--radius);
+    .heroCard{padding:28px 26px}
+    .kicker{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:9px 12px; border-radius:999px;
+      background: rgba(0,0,0,.22);
       border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
+      color: rgba(255,255,255,.75);
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
     }
-    details{ border-top:1px solid rgba(255,255,255,.10); padding: 14px 16px; }
-    details:first-child{ border-top:none; }
-    summary{
+    .kicker .chipDot{
+      width:7px;height:7px;border-radius:999px;background:var(--gold);
+      box-shadow: 0 0 18px rgba(247,200,106,.55);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size: clamp(34px, 4.4vw, 56px);
+      line-height:1.02;
+      letter-spacing:.02em;
+    }
+    .grad{
+      background: linear-gradient(90deg, rgba(255,255,255,.94), rgba(255,223,154,.92), rgba(88,209,255,.86));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow: 0 18px 70px rgba(0,0,0,.45);
+    }
+    .sub{
+      max-width: 64ch;
+      color: rgba(255,255,255,.76);
+      font-size:16px;
+      line-height:1.5;
+      margin:0 0 18px;
+    }
+    .tagline{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin: 18px 0 0;
+    }
+    .tag{
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.78);
+      font-size:13px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .tag b{color: rgba(255,223,154,.95)}
+    .tag i{
+      width:8px;height:8px;border-radius:999px;
+      background: rgba(255,223,154,.85);
+      box-shadow: 0 0 18px rgba(255,223,154,.55);
+      display:inline-block;
+    }
+
+    .sideCard{padding:18px}
+    .sideHead{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      margin-bottom:10px;
+    }
+    .sideHead h3{margin:0; font-size:14px; letter-spacing:.16em; text-transform:uppercase; color: rgba(255,255,255,.70)}
+    .smallHint{
+      font-size:12px; color: rgba(255,255,255,.62);
+      padding:8px 10px; border-radius:999px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .steps{
+      display:grid; gap:10px; margin:10px 0 14px;
+    }
+    .step{
+      border-radius:18px;
+      padding:12px 12px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .num{
+      width:26px;height:26px;border-radius:9px;
+      display:grid; place-items:center;
+      background: rgba(255,223,154,.10);
+      border:1px solid rgba(255,223,154,.20);
+      color: rgba(255,223,154,.95);
+      font-family: var(--mono);
+      font-size:12px;
+      flex:0 0 auto;
+    }
+    .step .t{font-weight:700; color: rgba(255,255,255,.88); font-size:13px; margin:0 0 2px}
+    .step .d{margin:0; color: rgba(255,255,255,.66); font-size:13px; line-height:1.35}
+
+    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+    .btn{
+      appearance:none; border:0;
+      border-radius: 16px;
+      padding:12px 14px;
+      font-weight:800;
+      letter-spacing:.02em;
       cursor:pointer;
-      font-weight:900;
-      color: rgba(255,255,255,.86);
-      list-style:none;
+      color: rgba(0,0,0,.86);
+      background: linear-gradient(135deg, rgba(255,223,154,.95), rgba(247,200,106,.88));
+      box-shadow: 0 18px 60px rgba(247,200,106,.18);
+      transition: transform .15s ease, filter .15s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      user-select:none;
     }
-    summary::-webkit-details-marker{ display:none; }
-    details p{ margin:10px 0 0; color: rgba(255,255,255,.68); line-height:1.6; font-size: 13.5px; max-width: 92ch; }
+    .btn:hover{transform: translateY(-1px); filter: brightness(1.05)}
+    .btn:active{transform: translateY(1px)}
+    .btn.secondary{
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.88);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+    .btn.ghost{
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,223,154,.20);
+      color: rgba(255,223,154,.92);
+    }
+
+    .section{margin-top:18px}
+    .cols{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .cols{grid-template-columns:1fr}
+    }
+    .feat{padding:18px}
+    .icon{
+      width:40px;height:40px;border-radius:14px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      display:grid; place-items:center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      margin-bottom:10px;
+      font-size:18px;
+    }
+    .feat h4{margin:0 0 8px; font-size:16px}
+    .feat p{margin:0; color: rgba(255,255,255,.68); line-height:1.45; font-size:14px}
+
+    .register{
+      padding:18px;
+    }
+    .register h3{
+      margin:0 0 10px;
+      font-size:14px;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color: rgba(255,255,255,.72);
+    }
+    .field{display:grid; gap:8px; margin:10px 0}
+    label{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color: rgba(255,255,255,.62)}
+    input{
+      width:100%;
+      padding:14px 14px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.92);
+      outline:none;
+      font-size:15px;
+    }
+    input::placeholder{color: rgba(255,255,255,.45)}
+    .note{color: rgba(255,255,255,.62); font-size:13px; line-height:1.45; margin-top:10px}
+    .divider{
+      height:1px; background: rgba(255,255,255,.10);
+      margin:14px 0;
+    }
+    .mini{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .mini .tag{font-size:12px; padding:9px 11px}
+    .statusBox{
+      border-radius:18px;
+      padding:12px 12px;
+      background: rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.72);
+      font-size:12px;
+      line-height:1.45;
+      margin-top:10px;
+      font-family: var(--mono);
+      white-space:pre-wrap;
+    }
+    .ok{color: rgba(87,255,191,.92)}
+    .warn{color: rgba(255,223,154,.92)}
+    .bad{color: rgba(255,90,122,.92)}
+
+    details{
+      border-radius:18px;
+      padding:12px 12px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    details + details{margin-top:10px}
+    summary{cursor:pointer; font-weight:800; color: rgba(255,255,255,.88)}
+    details p{margin:10px 0 0; color: rgba(255,255,255,.68); line-height:1.5}
 
     footer{
-      margin-top: 22px;
-      display:flex;
-      justify-content:space-between;
-      gap: 12px;
-      flex-wrap:wrap;
-      color: rgba(255,255,255,.54);
-      font-size: 12px;
-      letter-spacing:.03em;
+      margin-top:22px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      color: rgba(255,255,255,.55);
+      font-size:12px;
+      padding:12px 6px 0;
+    }
+    footer a{color: rgba(255,223,154,.86); text-decoration:none}
+    footer a:hover{text-decoration:underline}
+
+    /* floating "scroll to top" */
+    .toTop{
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:5;
+      width:48px;height:48px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 24px 70px rgba(0,0,0,.5);
+      color: rgba(255,255,255,.86);
+      cursor:pointer;
+      display:none;
       align-items:center;
+      justify-content:center;
+      font-size:18px;
     }
-    .mini{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .link{
-      text-decoration:none;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.03);
-      color: rgba(255,255,255,.70);
-    }
-    .link:hover{ border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.86); }
+    .toTop.show{display:flex}
 
-    .float{ animation: float 6s ease-in-out infinite; }
-    @keyframes float{ 0%,100%{ transform: translateY(0px); } 50%{ transform: translateY(-6px); } }
-
-    @media (max-width: 860px){
-      h1{ font-size: 36px; }
-      .layout{ grid-template-columns: 1fr; }
-      .card{ grid-column: span 12; }
-      .wrap{ padding-bottom: 70px; }
-    }
+    /* subtle entrance */
+    .fadeUp{opacity:0; transform:translateY(10px); transition: opacity .6s ease, transform .6s ease}
+    .fadeUp.on{opacity:1; transform:translateY(0)}
   </style>
 </head>
 
 <body>
-  <canvas id="stars" aria-hidden="true"></canvas>
-  <div class="fog" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
+  <canvas id="stars"></canvas>
+  <div id="fog"></div>
 
   <div class="wrap">
-
-    <div class="top">
-      <a class="brand" href="#" aria-label="APEX Ghost Protocol">
-        <div class="sig float"><span>👻</span></div>
-        <div>
-          <b>APEX</b>
-          <small>Ghost Protocol • The Witness Network</small>
+    <div class="topbar fadeUp">
+      <div class="brand">
+        <div class="mark"><span>👻</span></div>
+        <div class="txt">
+          <div class="a">APEX</div>
+          <div class="b">Ghost Protocol</div>
         </div>
-      </a>
+      </div>
 
-      <div class="actions">
-        <span class="chip" id="liveChip">LIVE • REGISTRATION</span>
-        <button class="btn" id="installBtn" style="display:none;">📲 Install</button>
-        <a class="btn gold" id="founderBtn" href="https://apex888.gumroad.com/l/ixnydz" target="_blank" rel="noreferrer">⚡ Founder Pass</a>
+      <div class="pill" title="Network status">
+        <span class="dot"></span>
+        <span><strong>LIVE</strong> <span class="sep">•</span> Registration</span>
       </div>
     </div>
 
-    <section class="hero">
-      <div class="heroInner">
-        <div>
-          <div class="kicker"><i></i> witness infrastructure</div>
-          <h1><span class="grad">GHOST PROTOCOL</span><br/>THE WITNESS NETWORK</h1>
-          <div class="sub">
-            When truth becomes scarce, <b>witnesses become infrastructure</b>.<br/>
-            A distributed network of <b>human presence</b>, <b>agreement</b>, and <b>proof</b> — quiet, lightweight, and undeniable.
+    <div class="hero">
+      <div class="grid">
+        <!-- HERO -->
+        <div class="card heroCard fadeUp">
+          <div class="kicker"><span class="chipDot"></span> Witness Infrastructure</div>
+          <h1 class="grad">GHOST PROTOCOL<br/>THE WITNESS NETWORK</h1>
+          <p class="sub">
+            When truth becomes scarce, <b>witnesses become infrastructure</b>.
+            Ghost Protocol is a distributed network of <b>human presence</b>, <b>agreement</b>, and <b>proof</b> — quiet, lightweight, and undeniable.
+          </p>
+
+          <div class="tagline">
+            <span class="tag"><i></i> <b>No mining.</b> No noise. Just confirmation.</span>
+            <span class="tag"><i></i> 1-tap confirmations</span>
+            <span class="tag"><i></i> presence proofs</span>
+            <span class="tag"><i></i> consensus snapshots</span>
+            <span class="tag"><i></i> timestamped record</span>
+            <span class="tag"><i></i> boring by design</span>
           </div>
 
-          <div class="pillRow">
-            <div class="pill gold"><b>No mining.</b> No noise. Just confirmation.</div>
-            <div class="pill">1-tap confirmations</div>
-            <div class="pill">presence proofs</div>
-            <div class="pill">consensus snapshots</div>
-            <div class="pill">timestamped record</div>
-            <div class="pill">boring by design</div>
+          <div class="ctaRow">
+            <button class="btn" id="jumpRegister">⚡ Register Now</button>
+            <button class="btn secondary" id="jumpHow">🧭 How it Works</button>
+            <button class="btn ghost" id="founderBtn">✨ Founder Pass</button>
           </div>
         </div>
 
-        <div class="layout">
-          <div class="panel">
-            <h3>WHAT YOU DO</h3>
-            <p>
-              You will receive “missions.” Each mission is a tiny confirmation:
-              <b>yes/no</b>, <b>agree/disagree</b>, <b>present/not present</b>.
-              Many independent confirmations create a durable record.
-            </p>
+        <!-- SIDE: LOOP -->
+        <div class="card sideCard fadeUp">
+          <div class="sideHead">
+            <h3>The Witness Loop</h3>
+            <div class="smallHint">under 5 seconds</div>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <div class="num">01</div>
+              <div>
+                <p class="t">Register</p>
+                <p class="d">You join the network. Minimal details. Zero spam.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">02</div>
+              <div>
+                <p class="t">Mission 0</p>
+                <p class="d">A single tap: <b>YES / NO</b>. Presence confirmed.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="num">03</div>
+              <div>
+                <p class="t">Consensus Snapshot</p>
+                <p class="d">Many taps converge into a timestamped record.</p>
+              </div>
+            </div>
           </div>
 
-          <div class="panel">
-            <h3>REGISTER NOW</h3>
+          <div class="divider"></div>
+          <div class="mini">
+            <span class="tag"><b>Quiet</b> by design</span>
+            <span class="tag">Battery-light</span>
+            <span class="tag">Human-first proof</span>
+          </div>
 
-            <form id="registerForm" autocomplete="on">
+          <div class="statusBox" id="configBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section">
+      <div class="cols">
+        <div class="card feat fadeUp">
+          <div class="icon">🧿</div>
+          <h4>Presence Proof</h4>
+          <p>Light “I was here” attestations. No background mining. No battery drain. Just witness.</p>
+        </div>
+        <div class="card feat fadeUp">
+          <div class="icon">🧾</div>
+          <h4>Receipts for Reality</h4>
+          <p>Audit-friendly outputs: what was believed, when, and by how many independent witnesses.</p>
+        </div>
+        <div class="card feat fadeUp">
+          <div class="icon">🪶</div>
+          <h4>Consensus Snapshots</h4>
+          <p>Disagreement is preserved, not erased. Truth is recorded as a durable timestamped consensus trail.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW -->
+    <div class="section" id="how">
+      <div class="grid">
+        <div class="card heroCard fadeUp">
+          <div class="kicker"><span class="chipDot"></span> What you do</div>
+          <h2 style="margin:14px 0 10px; font-size:28px; line-height:1.15;">Tiny confirmations become permanent record.</h2>
+          <p class="sub" style="margin-bottom:0;">
+            You receive “missions.” Each mission is a tiny confirmation: <b>yes/no</b>, <b>agree/disagree</b>, <b>present/not present</b>.
+            Many independent confirmations create a durable record.
+          </p>
+          <div class="divider"></div>
+          <p class="note">
+            <b>Important:</b> Ghost Protocol does not ask you to “work.” It asks you to <b>witness</b>.
+            Quiet systems scale because they don’t demand attention.
+          </p>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="card register fadeUp" id="register">
+          <h3>Register Now</h3>
+
+          <form id="regForm">
+            <div class="field">
               <label for="name">Name (optional)</label>
-              <input id="name" name="name" type="text" placeholder="Your name" inputmode="text" />
+              <input id="name" name="name" autocomplete="name" placeholder="Your name" />
+            </div>
 
-              <div style="height:12px"></div>
-
+            <div class="field">
               <label for="email">Email (required)</label>
-              <input id="email" name="email" type="email" placeholder="you@domain.com" inputmode="email" required />
+              <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@domain.com" />
+            </div>
 
-              <div style="height:12px"></div>
+            <div class="ctaRow">
+              <button class="btn" type="submit" id="regBtn">👻 Register</button>
+              <button class="btn secondary" type="button" id="missionBtn">📨 Send Mission 0</button>
+            </div>
 
-              <div class="row">
-                <button class="btn primary" type="submit" style="flex:1;">👻 Register</button>
-                <button class="btn" type="button" id="missionBtn">🛰️ Send Mission 0</button>
-              </div>
+            <p class="note" id="afterText">
+              <b>What happens next:</b><br/>
+              • You receive <b>Mission 0</b> by email<br/>
+              • It takes <b>under 5 seconds</b><br/>
+              • Your confirmation becomes part of a durable record<br/>
+              • Your standing begins immediately
+            </p>
+          </form>
 
-              <div class="msg ok" id="okMsg">✅ Registered. Mission 0 is ready. Check your email draft and send.</div>
-              <div class="msg bad" id="badMsg">⚠️ Enter a valid email.</div>
-
-              <div style="height:10px"></div>
-
-              <div style="color:rgba(255,255,255,.62); font-size:12.5px; line-height:1.5;">
-                Zero spam. One signal. Registration sends your details to the operator inbox.
-              </div>
-            </form>
-          </div>
+          <div class="statusBox" id="status">Status: <span class="warn">Awaiting registration.</span></div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="grid" aria-label="Capabilities">
-      <div class="card">
-        <div class="icon">🧿</div>
-        <h2>Presence Proof</h2>
-        <p>Light “I was here” attestations. No battery drain. No background mining. Just witness.</p>
+    <!-- FAQ -->
+    <div class="section">
+      <div class="card heroCard fadeUp">
+        <div class="kicker"><span class="chipDot"></span> FAQ</div>
+        <div style="margin-top:14px; display:grid; gap:10px;">
+          <details>
+            <summary>What is Ghost Protocol in one sentence?</summary>
+            <p>A network where humans do tiny confirmations that become a durable timestamped record of consensus.</p>
+          </details>
+          <details>
+            <summary>Do I need to install an app?</summary>
+            <p>No. Registration is web-based. Later, missions can be delivered as simple links and 1-tap forms.</p>
+          </details>
+          <details>
+            <summary>How does registration work?</summary>
+            <p>You register once. The operator inbox receives your entry. You can then receive Mission 0 and future missions.</p>
+          </details>
+          <details>
+            <summary>What is Founder Pass?</summary>
+            <p>An early access flag for the first wave. It’s optional. It exists to mark early standing and keep the network tight.</p>
+          </details>
+        </div>
       </div>
-      <div class="card">
-        <div class="icon">🧾</div>
-        <h2>Consensus Snapshots</h2>
-        <p>Many taps converge into a timestamped record. Disagreement is preserved, not erased.</p>
-      </div>
-      <div class="card">
-        <div class="icon">⛓️</div>
-        <h2>Receipts for Reality</h2>
-        <p>Audit-friendly outputs: what was believed, when, and by how many independent witnesses.</p>
-      </div>
-    </section>
+    </div>
 
-    <section class="faq" aria-label="FAQ">
-      <details open>
-        <summary>What is Ghost Protocol in one sentence?</summary>
-        <p>A network where humans do tiny confirmations that become a durable timestamped record of consensus.</p>
-      </details>
-      <details>
-        <summary>Do I need to install an app?</summary>
-        <p>No. This is a web protocol. You can optionally “Install” it as an app (PWA) from the browser.</p>
-      </details>
-      <details>
-        <summary>How does registration work?</summary>
-        <p>Registration captures your details and opens an email draft to the operator inbox. You press send. Done.</p>
-      </details>
-      <details>
-        <summary>What is Founder Pass?</summary>
-        <p>Optional paid access for early missions and priority channel. You control the link.</p>
-      </details>
-    </section>
-
-    <footer>
-      <div class="mini">
-        <span>© <span id="yr"></span> APEX</span>
-        <span>•</span>
-        <span>GHOST PROTOCOL</span>
-        <span>•</span>
-        <span style="color:rgba(246,194,91,.82)">Own the record.</span>
-      </div>
-
-      <div class="mini">
-        <a class="link" href="https://github.com/kawal393" target="_blank" rel="noreferrer">GitHub</a>
-        <a class="link" href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+    <footer class="fadeUp">
+      <div>© <span id="year"></span> APEX • GHOST PROTOCOL • <span style="color:rgba(255,223,154,.86)">Own the record.</span></div>
+      <div style="display:flex; gap:12px;">
+        <a href="#" id="openGit">GitHub</a>
+        <a href="#" id="openX">X</a>
       </div>
     </footer>
   </div>
 
+  <button class="toTop" id="toTop" title="Top">↑</button>
+
   <script>
-    // ====== YEAR ======
-    document.getElementById("yr").textContent = new Date().getFullYear();
+    /*************************************************************
+     * ✅ ONLY THINGS YOU EDIT (3 lines)
+     *************************************************************/
+    const OPERATOR_EMAIL = "YOUR_EMAIL_HERE@example.com";
 
-    // ====== REGISTRATION (NO EDITS NEEDED) ======
-    const OPERATOR_EMAIL = "apexghost@proton.me"; // where signups go (you can keep this)
+    // OPTION A (Recommended): Formspree endpoint (creates a real inbox)
+    // Create at formspree.io -> New Form -> get endpoint like: https://formspree.io/f/xxxxxx
+    const FORM_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
 
-    const form = document.getElementById("registerForm");
-    const okMsg = document.getElementById("okMsg");
-    const badMsg = document.getElementById("badMsg");
+    // Optional: Founder Pass link (Stripe/Gumroad). Leave blank to hide button.
+    const FOUNDER_PASS_URL = "";
+
+    /*************************************************************
+     * Social links (optional)
+     *************************************************************/
+    const GITHUB_REPO_URL = "https://github.com/kawal393";
+    const X_URL = "https://x.com/";
+
+    /*************************************************************
+     * UX + Config validation (no editing needed)
+     *************************************************************/
+    const isPlaceholder = (s) => !s || s.includes("YOUR_") || s.includes("example.com") || s.includes("YOUR_FORM_ID");
+
+    const configBox = document.getElementById("configBox");
+    const statusBox = document.getElementById("status");
+    const founderBtn = document.getElementById("founderBtn");
+
+    function setStatus(text, cls){
+      statusBox.innerHTML = "Status: <span class='" + cls + "'>" + text + "</span>";
+    }
+
+    function renderConfig(){
+      let lines = [];
+      lines.push("CONFIG CHECK:");
+      lines.push("- Operator email: " + (isPlaceholder(OPERATOR_EMAIL) ? "MISSING" : "OK"));
+      lines.push("- Register endpoint: " + (isPlaceholder(FORM_ENDPOINT) ? "MISSING" : "OK"));
+      lines.push("- Founder pass: " + (FOUNDER_PASS_URL ? "ON" : "OFF"));
+      lines.push("");
+      lines.push("If email/endpoint is missing, registration can’t deliver.");
+      lines.push("Fix the 3 lines at top, refresh.");
+
+      const ok = (!isPlaceholder(OPERATOR_EMAIL) && !isPlaceholder(FORM_ENDPOINT));
+      configBox.innerHTML =
+        (ok ? "<span class='ok'>READY.</span>\n" : "<span class='bad'>NOT READY.</span>\n") +
+        lines.join("\n");
+
+      // Hide Founder Pass if no link
+      if(!FOUNDER_PASS_URL){
+        founderBtn.style.display = "none";
+      }
+    }
+    renderConfig();
+
+    /*************************************************************
+     * Smooth scroll
+     *************************************************************/
+    const jumpRegister = document.getElementById("jumpRegister");
+    const jumpHow = document.getElementById("jumpHow");
+    jumpRegister.addEventListener("click", () => document.getElementById("register").scrollIntoView({behavior:"smooth"}));
+    jumpHow.addEventListener("click", () => document.getElementById("how").scrollIntoView({behavior:"smooth"}));
+
+    /*************************************************************
+     * Founder Pass
+     *************************************************************/
+    founderBtn.addEventListener("click", () => {
+      if(!FOUNDER_PASS_URL){
+        alert("Founder Pass is not enabled yet.");
+        return;
+      }
+      window.open(FOUNDER_PASS_URL, "_blank");
+    });
+
+    /*************************************************************
+     * Registration logic
+     * - Posts to Formspree (Option A)
+     * - Also can fall back to mailto if endpoint missing
+     *************************************************************/
+    const regForm = document.getElementById("regForm");
+    const regBtn = document.getElementById("regBtn");
     const missionBtn = document.getElementById("missionBtn");
 
-    function openMailTo(name, email){
-      const subject = encodeURIComponent("GHOST PROTOCOL — NEW WITNESS REGISTRATION");
+    function mission0Mailto(email){
+      const subject = encodeURIComponent("👻 Ghost Protocol — Mission 0");
       const body = encodeURIComponent(
-`NEW WITNESS REGISTRATION
+`MISSION 0 — PRESENCE CHECK
 
-Name: ${name || "(not provided)"}
-Email: ${email || "(not provided)"}
-Timestamp: ${new Date().toISOString()}
+Are you a real human reading this right now?
 
-Mission 0 requested.
-`
+Reply with ONE word:
+YES  or  NO
+
+— APEX Ghost Protocol`
+      );
+      // sends to user (and you can CC yourself if you want)
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
+
+    function operatorMailto(name, email){
+      const subject = encodeURIComponent("👻 New Witness Registration");
+      const body = encodeURIComponent(
+`NEW WITNESS REGISTERED
+
+Name: ${name || "(none)"}
+Email: ${email}
+
+Next:
+- Send Mission 0
+- Add to witness list`
       );
       window.location.href = `mailto:${OPERATOR_EMAIL}?subject=${subject}&body=${body}`;
     }
 
-    form.addEventListener("submit", (e) => {
+    regForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      okMsg.style.display = "none";
-      badMsg.style.display = "none";
 
       const name = (document.getElementById("name").value || "").trim();
       const email = (document.getElementById("email").value || "").trim();
 
-      if (!email || !email.includes("@")) {
-        badMsg.style.display = "block";
+      if(!email){
+        setStatus("Email required.", "bad");
         return;
       }
 
-      // Save locally so the device is "registered"
-      try {
-        const payload = { name, email, ts: new Date().toISOString() };
-        const key = "ghost_witness_registry";
-        const list = JSON.parse(localStorage.getItem(key) || "[]");
-        list.push(payload);
-        localStorage.setItem(key, JSON.stringify(list));
-        localStorage.setItem("ghost_last_witness", JSON.stringify(payload));
-      } catch {}
+      // Block if config is not ready
+      if(isPlaceholder(OPERATOR_EMAIL) || isPlaceholder(FORM_ENDPOINT)){
+        setStatus("Set OPERATOR_EMAIL + FORM_ENDPOINT at top.", "bad");
+        alert("Set OPERATOR_EMAIL and FORM_ENDPOINT at top of the code, then refresh.");
+        return;
+      }
 
-      okMsg.style.display = "block";
-      openMailTo(name, email);
+      regBtn.disabled = true;
+      regBtn.textContent = "⏳ Registering…";
+      setStatus("Sending registration…", "warn");
+
+      try{
+        const payload = {
+          name,
+          email,
+          source: window.location.href,
+          timestamp: new Date().toISOString(),
+          product: "APEX Ghost Protocol — Witness Network"
+        };
+
+        const res = await fetch(FORM_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if(!res.ok){
+          throw new Error("Endpoint error");
+        }
+
+        setStatus("Registered. Mission 0 is ready.", "ok");
+        regBtn.textContent = "✅ Registered";
+
+        // Optional: instantly open Mission 0 email to user
+        // If you don't want this auto-open, comment out next line:
+        mission0Mailto(email);
+
+      }catch(err){
+        setStatus("Registration failed. Falling back to email.", "warn");
+        // fallback to mailto operator so you still capture the lead
+        operatorMailto(name, email);
+      }finally{
+        regBtn.disabled = false;
+        regBtn.textContent = "👻 Register";
+      }
     });
 
     missionBtn.addEventListener("click", () => {
-      const name = (document.getElementById("name").value || "").trim();
       const email = (document.getElementById("email").value || "").trim();
-      if (!email || !email.includes("@")) {
-        badMsg.style.display = "block";
+      if(!email){
+        alert("Enter your email first, then tap Mission 0.");
         return;
       }
-      openMailTo(name, email);
+      mission0Mailto(email);
     });
 
-    // ====== PWA INSTALL PROMPT ======
-    let deferredPrompt = null;
-    const installBtn = document.getElementById("installBtn");
+    /*************************************************************
+     * Footer links
+     *************************************************************/
+    document.getElementById("openGit").addEventListener("click", (e) => { e.preventDefault(); window.open(GITHUB_REPO_URL, "_blank"); });
+    document.getElementById("openX").addEventListener("click", (e) => { e.preventDefault(); window.open(X_URL, "_blank"); });
 
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-flex";
+    /*************************************************************
+     * Top button
+     *************************************************************/
+    const toTop = document.getElementById("toTop");
+    window.addEventListener("scroll", () => {
+      if(window.scrollY > 600) toTop.classList.add("show");
+      else toTop.classList.remove("show");
     });
+    toTop.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
 
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = "none";
-    });
+    /*************************************************************
+     * Entrance animations
+     *************************************************************/
+    const obs = new IntersectionObserver((entries)=>{
+      for(const en of entries){
+        if(en.isIntersecting) en.target.classList.add("on");
+      }
+    }, {threshold:.12});
+    document.querySelectorAll(".fadeUp").forEach(el => obs.observe(el));
 
-    // ====== STARFIELD ======
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /*************************************************************
+     * Starfield (majestic background, lightweight)
+     *************************************************************/
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d", { alpha: true });
 
-    let W, H, DPR;
-    const stars = [];
-    const STAR_COUNT = 240;
-
+    let w,h,stars;
     function resize(){
-      DPR = Math.min(window.devicePixelRatio || 1, 2);
-      W = Math.floor(window.innerWidth * DPR);
-      H = Math.floor(window.innerHeight * DPR);
-      canvas.width = W;
-      canvas.height = H;
+      w = canvas.width = window.innerWidth * devicePixelRatio;
+      h = canvas.height = window.innerHeight * devicePixelRatio;
       canvas.style.width = window.innerWidth + "px";
       canvas.style.height = window.innerHeight + "px";
-      initStars();
+      makeStars();
     }
-
-    function initStars(){
-      stars.length = 0;
-      for(let i=0;i<STAR_COUNT;i++){
-        stars.push({
-          x: Math.random()*W,
-          y: Math.random()*H,
-          r: (Math.random()*1.2 + 0.3) * DPR,
-          v: (Math.random()*0.35 + 0.06) * DPR,
-          a: Math.random()*0.6 + 0.25,
-          hue: Math.random() < 0.5 ? "warm" : "cool"
-        });
-      }
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+    function makeStars(){
+      const count = Math.floor((window.innerWidth * window.innerHeight) / 9000);
+      stars = new Array(count).fill(0).map(()=>({
+        x: rand(0,w),
+        y: rand(0,h),
+        r: rand(.6, 1.8) * devicePixelRatio,
+        a: rand(.15, .8),
+        v: rand(.02, .12) * devicePixelRatio,
+        tw: rand(0, 10)
+      }));
     }
-
-    let t = 0;
     function draw(){
-      t += 0.0035;
-
-      ctx.clearRect(0,0,W,H);
-
-      // faint nebula wash
-      const g = ctx.createRadialGradient(W*0.25, H*0.15, 0, W*0.25, H*0.15, Math.max(W,H)*0.9);
-      g.addColorStop(0, "rgba(246,194,91,0.10)");
-      g.addColorStop(0.35, "rgba(143,123,255,0.07)");
+      ctx.clearRect(0,0,w,h);
+      // soft gradient haze
+      const g = ctx.createRadialGradient(w*0.6, h*0.18, 0, w*0.6, h*0.18, Math.max(w,h)*0.7);
+      g.addColorStop(0, "rgba(255,223,154,0.06)");
+      g.addColorStop(0.4, "rgba(120,96,255,0.05)");
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = g;
-      ctx.fillRect(0,0,W,H);
+      ctx.fillRect(0,0,w,h);
 
       for(const s of stars){
-        s.y += s.v;
-        if(s.y > H + 20) { s.y = -20; s.x = Math.random()*W; }
-        const tw = 0.35 + 0.65*Math.abs(Math.sin(t + s.x*0.002));
-        ctx.globalAlpha = s.a * tw;
+        s.tw += 0.02;
+        const twinkle = (Math.sin(s.tw) + 1) / 2; // 0..1
+        const alpha = s.a * (0.55 + twinkle*0.6);
 
-        ctx.fillStyle = s.hue === "warm" ? "rgba(255,225,160,1)" : "rgba(205,210,255,1)";
         ctx.beginPath();
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
         ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
         ctx.fill();
-      }
-      ctx.globalAlpha = 1;
 
+        s.y += s.v;
+        if(s.y > h + 10){
+          s.y = -10;
+          s.x = rand(0,w);
+        }
+      }
       requestAnimationFrame(draw);
     }
 
