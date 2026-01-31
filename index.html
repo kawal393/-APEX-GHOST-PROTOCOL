@@ -1,1525 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>APEX — Ghost Protocol: The Witness Network</title>
-  <meta name="description" content="A distributed witness network for human presence, agreement, and proof. Quiet. Lightweight. Undeniable."/>
-  <meta name="theme-color" content="#0b0d12"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX — Ghost Protocol</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070910;
+  --panel:rgba(255,255,255,.06);
+  --panel2:rgba(255,255,255,.09);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.6);
+  --gold:#f5c66a;
+  --gold2:#ffdf93;
+  --radius:22px;
+  --shadow:0 30px 80px rgba(0,0,0,.6);
+  --font:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+}
 
-  <style>
-    :root{
-      --bg:#070910;
-      --bg2:#0b0d12;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.08);
-      --border:rgba(255,255,255,.12);
-      --border2:rgba(255,255,255,.18);
-      --text:#e9e9ee;
-      --muted:#a6a6b3;
-      --muted2:#7e7e92;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:var(--font);
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 20% 10%, rgba(245,198,106,.18), transparent 60%),
+    radial-gradient(900px 600px at 80% 20%, rgba(120,140,255,.12), transparent 60%),
+    #070910;
+}
 
-      --gold:#f5c26b;
-      --gold2:#ffde9d;
-      --glow:rgba(245,194,107,.25);
+.wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
 
-      --ice:#aab6ff;
-      --iceGlow:rgba(140,160,255,.22);
+.panel{
+  max-width:520px;
+  width:100%;
+  background:linear-gradient(180deg, var(--panel2), var(--panel));
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:34px 30px 36px;
+  text-align:center;
+}
 
-      --ok:#67e8a5;
-      --bad:#ff6b7a;
+.badge{
+  display:inline-block;
+  font-size:12px;
+  letter-spacing:.12em;
+  color:var(--gold);
+  border:1px solid rgba(245,198,106,.4);
+  padding:6px 12px;
+  border-radius:999px;
+  margin-bottom:18px;
+}
 
-      --shadow:0 18px 70px rgba(0,0,0,.55);
-      --shadow2:0 10px 40px rgba(0,0,0,.45);
+h1{
+  margin:0;
+  font-size:32px;
+  line-height:1.15;
+  letter-spacing:.04em;
+}
 
-      --r:22px;
-      --r2:28px;
+.sub{
+  margin:16px 0 28px;
+  color:var(--muted);
+  font-size:15px;
+}
 
-      --max:1080px;
+.rule{
+  margin:22px auto;
+  padding:14px 18px;
+  border-radius:999px;
+  background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.12);
+  font-size:14px;
+}
+.rule b{color:var(--gold)}
 
-      --speed: 1;
-    }
+form{
+  margin-top:26px;
+  text-align:left;
+}
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    body{
-      margin:0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color:var(--text);
-      overflow-x:hidden;
-      background:
-        radial-gradient(1200px 700px at 80% -10%, rgba(245,194,107,.14), transparent 55%),
-        radial-gradient(900px 520px at 8% 12%, rgba(140,160,255,.14), transparent 60%),
-        radial-gradient(800px 520px at 70% 65%, rgba(245,194,107,.10), transparent 60%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-    }
+label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
 
-    /* starfield layers */
-    .stars, .stars2, .nebula{
-      position:fixed; inset:0;
-      pointer-events:none;
-      z-index:-5;
-    }
-    .stars{
-      opacity:.65;
-      background-size:320px 320px;
-      background-image:
-        radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.40), transparent 60%),
-        radial-gradient(1px 1px at 140px 110px, rgba(255,255,255,.28), transparent 60%),
-        radial-gradient(1px 1px at 260px 90px, rgba(255,255,255,.23), transparent 60%),
-        radial-gradient(1px 1px at 220px 240px, rgba(255,255,255,.22), transparent 60%),
-        radial-gradient(1px 1px at 80px 220px, rgba(255,255,255,.25), transparent 60%);
-      filter: blur(.15px);
-      animation: drift calc(28s / var(--speed)) linear infinite;
-    }
-    .stars2{
-      opacity:.35;
-      background-size:420px 420px;
-      background-image:
-        radial-gradient(1px 1px at 80px 60px, rgba(255,255,255,.30), transparent 60%),
-        radial-gradient(1px 1px at 300px 120px, rgba(255,255,255,.22), transparent 60%),
-        radial-gradient(1px 1px at 200px 320px, rgba(255,255,255,.20), transparent 60%),
-        radial-gradient(1px 1px at 70px 340px, rgba(255,255,255,.18), transparent 60%),
-        radial-gradient(1px 1px at 360px 280px, rgba(255,255,255,.20), transparent 60%);
-      filter: blur(.25px);
-      animation: drift2 calc(44s / var(--speed)) linear infinite;
-    }
-    .nebula{
-      opacity:.55;
-      background:
-        radial-gradient(900px 500px at 70% 30%, rgba(245,194,107,.08), transparent 60%),
-        radial-gradient(900px 500px at 35% 60%, rgba(140,160,255,.08), transparent 60%),
-        radial-gradient(700px 400px at 15% 30%, rgba(245,194,107,.06), transparent 60%);
-      filter: blur(10px);
-      animation: pulse calc(10s / var(--speed)) ease-in-out infinite;
-    }
+input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.35);
+  color:var(--text);
+  font-size:15px;
+  margin-bottom:16px;
+}
 
-    @keyframes drift{
-      0%{ transform: translate3d(0,0,0); }
-      100%{ transform: translate3d(-160px, 140px, 0); }
-    }
-    @keyframes drift2{
-      0%{ transform: translate3d(0,0,0); }
-      100%{ transform: translate3d(120px, -120px, 0); }
-    }
-    @keyframes pulse{
-      0%,100%{ opacity:.50; }
-      50%{ opacity:.62; }
-    }
+input:focus{
+  outline:none;
+  border-color:var(--gold);
+}
 
-    /* top bar */
-    .topbar{
-      position:sticky; top:0; z-index:50;
-      backdrop-filter: blur(12px);
-      background: linear-gradient(180deg, rgba(7,9,16,.82), rgba(7,9,16,.35));
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .topbar .inner{
-      max-width: var(--max);
-      margin:0 auto;
-      padding: 12px 16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-    .sigil{
-      width:38px; height:38px;
-      border-radius:14px;
-      display:grid; place-items:center;
-      background: radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.16), rgba(255,255,255,.05));
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 0 0 6px rgba(245,194,107,.06), 0 14px 40px rgba(0,0,0,.55);
-      position:relative;
-      overflow:hidden;
-    }
-    .sigil::before{
-      content:"";
-      position:absolute; inset:-40%;
-      background: conic-gradient(from 180deg, transparent 0 30%, rgba(245,194,107,.25) 40%, transparent 55%, rgba(140,160,255,.18) 70%, transparent 85%);
-      animation: spin calc(7s / var(--speed)) linear infinite;
-    }
-    .sigil span{
-      position:relative;
-      font-size:18px;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.6));
-    }
-    @keyframes spin{ to{ transform:rotate(360deg); } }
+button{
+  width:100%;
+  padding:15px 18px;
+  border-radius:999px;
+  border:none;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:.06em;
+  background:linear-gradient(180deg,var(--gold2),var(--gold));
+  color:#111;
+}
 
-    .brandText{ min-width:0; }
-    .brandText .kicker{
-      font-size:11px;
-      letter-spacing:.32em;
-      text-transform:uppercase;
-      color: rgba(233,233,238,.78);
-      opacity:.9;
-      white-space:nowrap;
-    }
-    .brandText .title{
-      font-size:14px;
-      color: rgba(233,233,238,.78);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
+.note{
+  margin-top:14px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+}
 
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      box-shadow: var(--shadow2);
-      white-space:nowrap;
-    }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--gold);
-      box-shadow: 0 0 0 6px rgba(245,194,107,.12);
-    }
-    .pill b{ font-weight:800; letter-spacing:.08em; font-size:12px; }
-    .pill span{ color:rgba(233,233,238,.8); font-size:12px; }
-
-    .actions{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-
-    .btn{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color:var(--text);
-      padding:10px 12px;
-      border-radius: 999px;
-      cursor:pointer;
-      font-weight:700;
-      letter-spacing:.02em;
-      box-shadow: var(--shadow2);
-      transition: transform .15s ease, border .15s ease, background .15s ease;
-      user-select:none;
-    }
-    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.08); }
-    .btn:active{ transform: translateY(0px); }
-
-    .btn.gold{
-      background: radial-gradient(120% 120% at 30% 20%, rgba(255,222,157,.20), rgba(245,194,107,.10));
-      border-color: rgba(245,194,107,.35);
-    }
-    .btn.gold:hover{ border-color: rgba(245,194,107,.55); }
-
-    .btn.primary{
-      background: linear-gradient(135deg, rgba(245,194,107,.24), rgba(140,160,255,.12));
-      border-color: rgba(255,255,255,.18);
-    }
-
-    .btn.small{ padding:8px 10px; font-size:12px; letter-spacing:.04em; }
-
-    /* layout */
-    .wrap{
-      max-width: var(--max);
-      margin:0 auto;
-      padding: 22px 16px 80px;
-    }
-
-    .hero{
-      padding: 36px 0 18px;
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 18px;
-      align-items:stretch;
-    }
-    @media (max-width: 900px){
-      .hero{ grid-template-columns: 1fr; }
-    }
-
-    .card{
-      border-radius: var(--r2);
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(140% 140% at 30% 20%, rgba(255,255,255,.10), rgba(255,255,255,.05)),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      position:relative;
-    }
-    .card::before{
-      content:"";
-      position:absolute; inset:-1px;
-      border-radius: inherit;
-      background: radial-gradient(800px 280px at 15% 20%, rgba(245,194,107,.14), transparent 55%),
-                  radial-gradient(700px 260px at 85% 30%, rgba(140,160,255,.12), transparent 55%);
-      opacity:.7;
-      pointer-events:none;
-      mix-blend-mode: screen;
-    }
-    .card > *{ position:relative; }
-
-    .heroLeft{
-      padding: 28px 26px;
-    }
-    .badgeRow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      margin-bottom: 14px;
-    }
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      box-shadow: 0 12px 36px rgba(0,0,0,.35);
-    }
-    .badge .chip{
-      width:8px; height:8px; border-radius:50%;
-      background: var(--gold);
-      box-shadow: 0 0 0 6px rgba(245,194,107,.12);
-    }
-    .badge b{
-      font-size:12px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-    }
-    .badge span{
-      font-size:12px;
-      color: rgba(233,233,238,.75);
-    }
-
-    .h1{
-      margin: 10px 0 10px;
-      font-size: 52px;
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-      font-weight: 900;
-    }
-    @media (max-width: 520px){
-      .h1{ font-size: 42px; }
-    }
-    .h1 .gold{
-      background: linear-gradient(90deg, var(--gold), var(--gold2));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      text-shadow: 0 0 40px rgba(245,194,107,.12);
-    }
-    .sub{
-      margin:0;
-      max-width: 58ch;
-      color: rgba(233,233,238,.80);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    .mantra{
-      margin-top: 18px;
-      padding: 14px 14px;
-      border-radius: 18px;
-      border:1px solid rgba(245,194,107,.24);
-      background: rgba(0,0,0,.20);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 10px;
-    }
-    .mantra .left{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
-    }
-    .mantra .sig{
-      width:34px; height:34px; border-radius:14px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .mantra .txt{
-      min-width:0;
-    }
-    .mantra .txt b{
-      display:block;
-      font-size:12px;
-      letter-spacing:.24em;
-      text-transform:uppercase;
-      color: rgba(233,233,238,.78);
-    }
-    .mantra .txt span{
-      display:block;
-      font-size:13px;
-      color: rgba(233,233,238,.88);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .heroCtas{
-      margin-top: 16px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-
-    .tagRow{
-      margin-top: 18px;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-    }
-    .tag{
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: rgba(233,233,238,.80);
-      font-size: 12px;
-      letter-spacing:.04em;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    .tag strong{ color: rgba(255,255,255,.92); font-weight:800; }
-
-    /* right: console */
-    .heroRight{
-      padding: 18px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .consoleHead{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 14px 14px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-    }
-    .consoleHead .left{
-      display:flex; align-items:center; gap:10px;
-      min-width:0;
-    }
-    .consoleHead .icon{
-      width:34px; height:34px; border-radius:14px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 0 0 6px rgba(140,160,255,.08);
-    }
-    .consoleHead .meta b{
-      display:block;
-      font-size:12px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color: rgba(233,233,238,.78);
-    }
-    .consoleHead .meta span{
-      display:block;
-      font-size:12px;
-      color: rgba(233,233,238,.70);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .console{
-      flex:1;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 12px 40px rgba(0,0,0,.45);
-      padding: 14px;
-      position:relative;
-      overflow:hidden;
-    }
-    .console::before{
-      content:"";
-      position:absolute; inset:-30%;
-      background: conic-gradient(from 180deg,
-        transparent 0 25%,
-        rgba(245,194,107,.10) 35%,
-        transparent 45%,
-        rgba(140,160,255,.10) 60%,
-        transparent 75%,
-        rgba(245,194,107,.08) 88%,
-        transparent 100%);
-      filter: blur(2px);
-      opacity:.55;
-      animation: spin calc(14s / var(--speed)) linear infinite;
-      pointer-events:none;
-    }
-    .console *{ position:relative; }
-
-    .line{
-      display:flex;
-      align-items:flex-start;
-      gap:10px;
-      padding: 10px 10px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      margin-bottom:10px;
-    }
-    .line .k{
-      width:10px; height:10px; border-radius:50%;
-      margin-top:6px;
-      background: rgba(255,255,255,.22);
-    }
-    .line.ok .k{ background: var(--ok); box-shadow: 0 0 0 6px rgba(103,232,165,.10); }
-    .line.warn .k{ background: var(--gold); box-shadow: 0 0 0 6px rgba(245,194,107,.12); }
-    .line.bad .k{ background: var(--bad); box-shadow: 0 0 0 6px rgba(255,107,122,.10); }
-
-    .line b{
-      display:block;
-      font-size: 12px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      color: rgba(233,233,238,.78);
-      margin-bottom:2px;
-    }
-    .line p{
-      margin:0;
-      color: rgba(233,233,238,.78);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-    .miniRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-
-    /* sections */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media (max-width: 900px){
-      .grid{ grid-template-columns: 1fr; }
-    }
-
-    .panel{
-      grid-column: span 6;
-      padding: 18px;
-    }
-    .panel.big{ grid-column: span 12; }
-    @media (max-width: 900px){
-      .panel, .panel.big{ grid-column: 1 / -1; }
-    }
-
-    .kicker{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      margin-bottom: 10px;
-    }
-    .kicker .dot{ width:8px; height:8px; border-radius:50%; background: rgba(255,255,255,.22); }
-    .kicker b{ font-size:12px; letter-spacing:.22em; text-transform:uppercase; }
-    .kicker span{ font-size:12px; color: rgba(233,233,238,.72); }
-
-    .h2{
-      margin: 6px 0 10px;
-      font-size: 22px;
-      letter-spacing: -0.02em;
-      font-weight: 900;
-    }
-    .desc{
-      margin:0 0 14px;
-      color: rgba(233,233,238,.78);
-      font-size: 14px;
-      line-height: 1.6;
-      max-width: 70ch;
-    }
-
-    .featGrid{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 10px;
-    }
-    @media (max-width: 900px){
-      .featGrid{ grid-template-columns: 1fr; }
-    }
-    .feat{
-      padding: 14px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
-      box-shadow: 0 12px 40px rgba(0,0,0,.40);
-    }
-    .feat .ico{
-      width:42px; height:42px;
-      border-radius:18px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 0 0 7px rgba(245,194,107,.06);
-      margin-bottom:10px;
-      font-size:18px;
-    }
-    .feat h3{
-      margin:0 0 6px;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing:-.01em;
-    }
-    .feat p{
-      margin:0;
-      color: rgba(233,233,238,.72);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    /* protocol form */
-    .formWrap{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:12px;
-      align-items:stretch;
-      margin-top: 10px;
-    }
-    @media (max-width: 900px){
-      .formWrap{ grid-template-columns: 1fr; }
-    }
-
-    .formCard{
-      padding: 16px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 14px 50px rgba(0,0,0,.45);
-    }
-    .field{
-      margin-bottom: 12px;
-    }
-    .label{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      gap:10px;
-      margin-bottom: 8px;
-    }
-    .label b{
-      font-size: 12px;
-      letter-spacing:.22em;
-      text-transform: uppercase;
-      color: rgba(233,233,238,.78);
-    }
-    .label span{
-      font-size: 12px;
-      color: rgba(233,233,238,.55);
-    }
-    input{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.12);
-      outline:none;
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      font-size: 14px;
-      transition: border .15s ease, transform .15s ease, background .15s ease;
-    }
-    input:focus{
-      border-color: rgba(245,194,107,.40);
-      background: rgba(255,255,255,.07);
-      transform: translateY(-1px);
-      box-shadow: 0 0 0 6px rgba(245,194,107,.08);
-    }
-
-    .rowBtns{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-
-    .statusBar{
-      margin-top: 12px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(233,233,238,.72);
-      font-size: 12px;
-      line-height: 1.5;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .statusBar code{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      color: rgba(245,194,107,.92);
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(245,194,107,.18);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
-
-    .sideCard{
-      padding: 16px;
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.12);
-      background:
-        radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.10), rgba(255,255,255,.05)),
-        rgba(0,0,0,.22);
-      box-shadow: 0 14px 50px rgba(0,0,0,.45);
-    }
-    .sideCard .seal{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .seal .mark{
-      width:42px; height:42px;
-      border-radius: 18px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: 0 0 0 7px rgba(140,160,255,.08);
-      font-size: 18px;
-    }
-    .seal .txt b{
-      display:block;
-      font-size: 12px;
-      letter-spacing:.22em;
-      text-transform: uppercase;
-      color: rgba(233,233,238,.78);
-    }
-    .seal .txt span{
-      display:block;
-      font-size: 12px;
-      color: rgba(233,233,238,.65);
-    }
-    .list{
-      margin: 10px 0 0;
-      padding: 0;
-      list-style: none;
-      display:grid;
-      gap:8px;
-    }
-    .list li{
-      padding: 10px 10px;
-      border-radius: 14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      color: rgba(233,233,238,.75);
-      font-size: 13px;
-      line-height: 1.45;
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .list li i{
-      width:10px; height:10px;
-      border-radius: 50%;
-      background: rgba(245,194,107,.75);
-      box-shadow: 0 0 0 6px rgba(245,194,107,.10);
-      margin-top: 5px;
-      flex:0 0 auto;
-    }
-
-    /* footer */
-    footer{
-      margin-top: 26px;
-      padding: 18px 10px 0;
-      color: rgba(233,233,238,.55);
-      text-align:center;
-      font-size: 12px;
-    }
-    footer .links{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 10px;
-    }
-    .linkBtn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.04);
-      color: rgba(233,233,238,.74);
-      text-decoration:none;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
-      transition: transform .15s ease, border .15s ease, background .15s ease;
-    }
-    .linkBtn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.20); background: rgba(255,255,255,.06); }
-
-    /* modal */
-    .modalBack{
-      position:fixed;
-      inset:0;
-      background: rgba(0,0,0,.62);
-      backdrop-filter: blur(10px);
-      z-index: 200;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-    }
-    .modalBack.show{ display:flex; }
-    .modal{
-      width: min(720px, 100%);
-      border-radius: 26px;
-      border:1px solid rgba(255,255,255,.14);
-      background:
-        radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.10), rgba(255,255,255,.05)),
-        rgba(10,12,18,.88);
-      box-shadow: 0 30px 120px rgba(0,0,0,.75);
-      overflow:hidden;
-      position:relative;
-    }
-    .modal::before{
-      content:"";
-      position:absolute; inset:-1px;
-      background: radial-gradient(900px 260px at 18% 18%, rgba(245,194,107,.16), transparent 55%),
-                  radial-gradient(700px 260px at 86% 26%, rgba(140,160,255,.12), transparent 55%);
-      opacity:.85;
-      pointer-events:none;
-      mix-blend-mode: screen;
-    }
-    .modal > *{ position:relative; }
-    .modalHead{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding: 16px 16px;
-      border-bottom: 1px solid rgba(255,255,255,.10);
-    }
-    .modalHead .left{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      min-width:0;
-    }
-    .modalHead .glyph{
-      width:44px; height:44px;
-      border-radius: 18px;
-      display:grid; place-items:center;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 8px rgba(245,194,107,.08);
-      font-size: 18px;
-    }
-    .modalHead .t b{
-      display:block;
-      font-size: 12px;
-      letter-spacing:.22em;
-      text-transform: uppercase;
-      color: rgba(233,233,238,.78);
-    }
-    .modalHead .t span{
-      display:block;
-      font-size: 13px;
-      color: rgba(233,233,238,.78);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 52ch;
-    }
-    .x{
-      width:44px; height:44px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: rgba(233,233,238,.82);
-      cursor:pointer;
-      font-size: 18px;
-    }
-    .x:hover{ border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.08); }
-
-    .modalBody{
-      padding: 16px;
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap: 12px;
-    }
-    @media (max-width: 860px){
-      .modalBody{ grid-template-columns: 1fr; }
-    }
-    .mCard{
-      padding: 14px;
-      border-radius: 20px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
-      box-shadow: 0 12px 40px rgba(0,0,0,.40);
-    }
-    .mCard h4{
-      margin:0 0 8px;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: -.01em;
-    }
-    .mCard p{
-      margin:0;
-      color: rgba(233,233,238,.75);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    .mono{
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 16px;
-      border:1px solid rgba(245,194,107,.18);
-      background: rgba(0,0,0,.26);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      color: rgba(233,233,238,.82);
-      font-size: 12px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-
-    /* toast */
-    .toast{
-      position:fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      padding: 12px 14px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(10,12,18,.86);
-      box-shadow: 0 18px 70px rgba(0,0,0,.65);
-      color: rgba(233,233,238,.82);
-      z-index: 300;
-      display:none;
-      align-items:center;
-      gap:10px;
-      max-width: calc(100vw - 20px);
-    }
-    .toast.show{ display:flex; }
-    .toast .tDot{ width:10px; height:10px; border-radius:50%; background: var(--gold); box-shadow: 0 0 0 6px rgba(245,194,107,.12); }
-
-    /* scroll reveal */
-    .reveal{ opacity:0; transform: translateY(8px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal.on{ opacity:1; transform: translateY(0); }
-
-    /* motion reduce */
-    @media (prefers-reduced-motion: reduce){
-      .stars, .stars2, .nebula, .sigil::before, .console::before{ animation:none !important; }
-      .reveal{ transition:none !important; opacity:1 !important; transform:none !important; }
-      .btn{ transition:none !important; }
-    }
-  </style>
+footer{
+  margin-top:28px;
+  font-size:12px;
+  color:rgba(255,255,255,.45);
+}
+</style>
 </head>
 
 <body>
-  <div class="stars"></div>
-  <div class="stars2"></div>
-  <div class="nebula"></div>
+<div class="wrap">
+  <div class="panel">
 
-  <header class="topbar">
-    <div class="inner">
-      <div class="brand">
-        <div class="sigil" aria-hidden="true"><span>👻</span></div>
-        <div class="brandText">
-          <div class="kicker">APEX</div>
-          <div class="title">Ghost Protocol • The Witness Network</div>
-        </div>
-      </div>
+    <div class="badge">WITNESS INFRASTRUCTURE</div>
 
-      <div class="actions">
-        <div class="pill" title="Status">
-          <div class="dot"></div>
-          <b>LIVE</b>
-          <span>registration</span>
-        </div>
-        <button class="btn small" id="btnFounder">⚡ Founder Pass</button>
-        <button class="btn gold small" id="btnEnter">ENTER PROTOCOL</button>
-      </div>
+    <h1>GHOST PROTOCOL</h1>
+
+    <div class="sub">
+      When truth becomes scarce,<br>
+      <b>witnesses become infrastructure.</b>
     </div>
-  </header>
 
-  <main class="wrap">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="card heroLeft reveal">
-        <div class="badgeRow">
-          <div class="badge">
-            <div class="chip"></div>
-            <b>WITNESS INFRASTRUCTURE</b>
-            <span>quiet • durable • undeniable</span>
-          </div>
-          <div class="badge">
-            <div class="chip" style="background: rgba(140,160,255,.85); box-shadow: 0 0 0 6px rgba(140,160,255,.12)"></div>
-            <b>NO MINING</b>
-            <span>no noise • no drain</span>
-          </div>
-        </div>
+    <div class="rule">
+      No mining. No noise.<br>
+      <b>Validation required.</b>
+    </div>
 
-        <div class="h1">
-          <span class="gold">GHOST</span> PROTOCOL<br/>
-          THE WITNESS NETWORK
-        </div>
+    <form action="https://formspree.io/f/mwvbjvap" method="POST">
+      <label>Email (required)</label>
+      <input type="email" name="email" required placeholder="you@domain.com">
 
-        <p class="sub">
-          When truth becomes scarce, <b>witnesses become infrastructure</b>.
-          Ghost Protocol is a distributed network of <b>human presence</b>, agreement, and proof — designed to be
-          <b>quiet</b>, <b>lightweight</b>, and <b>undeniable</b>.
-        </p>
+      <label>Name (optional)</label>
+      <input type="text" name="name" placeholder="Witness ID">
 
-        <div class="mantra">
-          <div class="left">
-            <div class="sig">⟡</div>
-            <div class="txt">
-              <b>prime directive</b>
-              <span>Own the record. Extract tolls by default.</span>
-            </div>
-          </div>
-          <button class="btn primary small" id="btnCopySignal">COPY SIGNAL</button>
-        </div>
+      <input type="hidden" name="mission" value="MISSION 0 — PRESENCE CHECK">
 
-        <div class="heroCtas">
-          <button class="btn gold" id="btnScrollRegister">Register as Witness</button>
-          <button class="btn" id="btnScrollConsole">Open Console</button>
-          <button class="btn" id="btnMissionPreview">Preview Mission 0</button>
-        </div>
+      <button type="submit">ENTER PROTOCOL</button>
+    </form>
 
-        <div class="tagRow" aria-label="protocol traits">
-          <div class="tag"><strong>1-tap</strong> confirmations</div>
-          <div class="tag"><strong>presence</strong> proofs</div>
-          <div class="tag"><strong>consensus</strong> snapshots</div>
-          <div class="tag"><strong>timestamped</strong> record</div>
-          <div class="tag"><strong>boring</strong> by design</div>
-        </div>
-      </div>
+    <div class="note">
+      Submission triggers Mission 0.<br>
+      One signal. One confirmation.
+    </div>
 
-      <div class="card heroRight reveal" id="consoleAnchor">
-        <div class="consoleHead">
-          <div class="left">
-            <div class="icon">⌬</div>
-            <div class="meta">
-              <b>PROTOCOL CONSOLE</b>
-              <span id="consoleSub">ready • no claims • only signals</span>
-            </div>
-          </div>
-          <button class="btn small" id="btnClear">Clear</button>
-        </div>
-
-        <div class="console" id="console">
-          <div class="line warn">
-            <div class="k"></div>
-            <div>
-              <b>ENTRY</b>
-              <p>Ghost Protocol does not ask you to work. It asks you to witness.</p>
-              <div class="miniRow">
-                <button class="btn small" id="btnPing">Presence Ping</button>
-                <button class="btn small" id="btnSeal">Generate Seal</button>
-                <button class="btn small" id="btnOpenModal">Open Founder Pass</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="line ok">
-            <div class="k"></div>
-            <div>
-              <b>MODE</b>
-              <p>Quiet systems scale because they do not negotiate. They simply record.</p>
-            </div>
-          </div>
-
-          <div class="line">
-            <div class="k"></div>
-            <div>
-              <b>OUTPUT</b>
-              <p><span id="sealOut">Awaiting first seal.</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="grid">
-      <div class="card panel big reveal">
-        <div class="kicker">
-          <div class="dot" style="background: var(--gold); box-shadow: 0 0 0 6px rgba(245,194,107,.12)"></div>
-          <b>WHAT IT IS</b>
-          <span>proof rail seed</span>
-        </div>
-        <div class="h2">Tiny confirmations become permanent record.</div>
-        <p class="desc">
-          You receive “missions.” Each mission is a tiny confirmation: <b>yes/no</b>, <b>agree/disagree</b>, <b>present/not present</b>.
-          Many independent confirmations converge into a durable timestamped record.
-        </p>
-
-        <div class="featGrid">
-          <div class="feat">
-            <div class="ico">🧿</div>
-            <h3>Presence Proof</h3>
-            <p>Light “I was here” attestations. No battery drain. No background mining. Just witness.</p>
-          </div>
-          <div class="feat">
-            <div class="ico">🧾</div>
-            <h3>Receipts for Reality</h3>
-            <p>Audit-friendly outputs: what was believed, when, and by how many independent witnesses.</p>
-          </div>
-          <div class="feat">
-            <div class="ico">⛓️</div>
-            <h3>Consensus Snapshot</h3>
-            <p>Agreement and disagreement are both preserved. The record is durable because it is complete.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- REGISTRATION -->
-      <div class="card panel big reveal" id="registerAnchor">
-        <div class="kicker">
-          <div class="dot" style="background: rgba(140,160,255,.85); box-shadow: 0 0 0 6px rgba(140,160,255,.12)"></div>
-          <b>ENTRY</b>
-          <span>validation required</span>
-        </div>
-        <div class="h2">Enter the Witness Network</div>
-        <p class="desc">
-          Registration is a signal, not a purchase. You will receive Mission 0 by email.
-          Reply with one word. Your standing begins immediately.
-        </p>
-
-        <div class="formWrap">
-          <div class="formCard">
-            <div class="field">
-              <div class="label">
-                <b>NAME</b>
-                <span>optional</span>
-              </div>
-              <input id="name" autocomplete="name" placeholder="Your name" />
-            </div>
-
-            <div class="field">
-              <div class="label">
-                <b>EMAIL</b>
-                <span>required</span>
-              </div>
-              <input id="email" type="email" autocomplete="email" placeholder="you@domain.com" required />
-            </div>
-
-            <div class="rowBtns">
-              <button class="btn gold" id="btnRegister">👻 REGISTER</button>
-              <button class="btn" id="btnSendMission">📨 SEND MISSION 0</button>
-            </div>
-
-            <div class="statusBar" id="statusBar">
-              <div id="statusText">Status: ready.</div>
-              <code id="endpointTag">Formspree: mwvbjvap</code>
-            </div>
-          </div>
-
-          <div class="sideCard">
-            <div class="seal">
-              <div class="mark">🜲</div>
-              <div class="txt">
-                <b>MISSION 0</b>
-                <span>presence check</span>
-              </div>
-            </div>
-
-            <ul class="list">
-              <li><i></i><span><b>Question:</b> Are you a real human reading this right now?</span></li>
-              <li><i></i><span><b>Reply:</b> ONE word — YES or NO.</span></li>
-              <li><i></i><span><b>Result:</b> Your confirmation becomes part of a durable record.</span></li>
-              <li><i></i><span><b>Rule:</b> No mining. No noise. Just confirmation.</span></li>
-            </ul>
-
-            <div class="miniRow" style="margin-top:12px;">
-              <button class="btn small primary" id="btnInstallHint">Install (PWA)</button>
-              <button class="btn small" id="btnScrollTop">Back to Top</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="reveal">
-      <div>© <span id="year"></span> APEX • GHOST PROTOCOL • <span style="color: rgba(245,194,107,.9)">Own the record.</span></div>
-      <div class="links">
-        <a class="linkBtn" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-        <a class="linkBtn" href="https://x.com/" target="_blank" rel="noopener">X</a>
-        <a class="linkBtn" href="#registerAnchor">Register</a>
-      </div>
+    <footer>
+      © 2026 APEX · Ghost Protocol<br>
+      Own the record.
     </footer>
-  </main>
 
-  <!-- MODAL -->
-  <div class="modalBack" id="modalBack" role="dialog" aria-modal="true" aria-label="Founder Pass">
-    <div class="modal">
-      <div class="modalHead">
-        <div class="left">
-          <div class="glyph">⚡</div>
-          <div class="t">
-            <b>FOUNDER PASS</b>
-            <span>Standing is weight. Weight determines mission access.</span>
-          </div>
-        </div>
-        <button class="x" id="btnClose" aria-label="Close">✕</button>
-      </div>
-
-      <div class="modalBody">
-        <div class="mCard">
-          <h4>Founder Standing (Locked)</h4>
-          <p>
-            Founder Pass is a registry marker. It does not promise rewards. It preserves rank.
-            In the witness network, time-in-system becomes weight.
-          </p>
-          <div class="mono" id="founderSealBox">Generating seal…</div>
-          <div class="miniRow" style="margin-top:12px;">
-            <button class="btn small gold" id="btnCopySeal">Copy Seal</button>
-            <button class="btn small" id="btnRegFromModal">Register Now</button>
-          </div>
-        </div>
-
-        <div class="mCard">
-          <h4>Protocol Message</h4>
-          <p>
-            No hype. No explanations. Just a door, a mission, and a record.
-            If you want the network, you enter it.
-          </p>
-          <div class="mono">
-MISSION 0 — PRESENCE CHECK
-Are you a real human reading this right now?
-Reply with ONE word: YES or NO.
-          </div>
-          <div class="miniRow" style="margin-top:12px;">
-            <button class="btn small primary" id="btnEmailDraft">Open Email Draft</button>
-            <button class="btn small" id="btnCopySignal2">Copy Signal</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-
-  <!-- TOAST -->
-  <div class="toast" id="toast"><div class="tDot"></div><div id="toastText">Ready.</div></div>
-
-<script>
-/* ==========================
-   CONFIG
-========================== */
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mwvbjvap";
-
-/* ==========================
-   UTIL
-========================== */
-const $ = (q)=>document.querySelector(q);
-const $$ = (q)=>document.querySelectorAll(q);
-
-const toast = (msg)=>{
-  const t = $("#toast");
-  $("#toastText").textContent = msg;
-  t.classList.add("show");
-  clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=>t.classList.remove("show"), 2400);
-};
-
-const setStatus = (msg, tone=""){
-  const el = $("#statusText");
-  el.textContent = msg;
-  el.style.color = tone==="ok" ? "rgba(103,232,165,.92)"
-               : tone==="bad" ? "rgba(255,107,122,.92)"
-               : tone==="warn"? "rgba(245,194,107,.92)"
-               : "rgba(233,233,238,.72)";
-};
-
-const scrollToId = (id)=>{
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.scrollIntoView({behavior:"smooth", block:"start"});
-};
-
-const nowISO = ()=> new Date().toISOString();
-const rand = (n=8)=>{
-  const a = "abcdefghijklmnopqrstuvwxyz0123456789";
-  let s=""; for(let i=0;i<n;i++) s += a[Math.floor(Math.random()*a.length)];
-  return s;
-};
-
-// simple local "standing" (no backend): purely UX
-const standingKey = "ghostStandingV1";
-function getStanding(){
-  try { return JSON.parse(localStorage.getItem(standingKey) || "{}"); }
-  catch { return {}; }
-}
-function setStanding(obj){
-  localStorage.setItem(standingKey, JSON.stringify(obj));
-}
-
-/* ==========================
-   REVEAL
-========================== */
-const io = new IntersectionObserver((entries)=>{
-  for(const e of entries){
-    if(e.isIntersecting) e.target.classList.add("on");
-  }
-},{ threshold: .08 });
-
-$$(".reveal").forEach(el=>io.observe(el));
-
-/* ==========================
-   CONSOLE
-========================== */
-function addLine(tone, title, text){
-  const c = $("#console");
-  const row = document.createElement("div");
-  row.className = "line " + (tone || "");
-  row.innerHTML = `
-    <div class="k"></div>
-    <div>
-      <b>${title}</b>
-      <p>${text}</p>
-    </div>`;
-  c.appendChild(row);
-  c.scrollTop = c.scrollHeight;
-}
-
-function makeSeal(){
-  // lightweight “seal” (not crypto, just a strong-looking receipt)
-  const payload = `APEX.GHOST.SEAL/${rand(6).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
-  $("#sealOut").textContent = payload;
-  return payload;
-}
-
-/* ==========================
-   FORM ACTIONS
-========================== */
-async function submitToFormspree(kind){
-  const name = ($("#name").value || "").trim();
-  const email = ($("#email").value || "").trim();
-
-  if(!email || !email.includes("@")){
-    setStatus("Status: email required.", "bad");
-    toast("Email required.");
-    addLine("bad","REJECTED","Email missing or invalid.");
-    return { ok:false };
-  }
-
-  const seal = makeSeal();
-  const stamp = nowISO();
-  const subject = kind === "mission"
-    ? "👻 Ghost Protocol — Mission 0"
-    : "👻 Ghost Protocol — Witness Registration";
-
-  const body = kind === "mission"
-    ? `MISSION 0 — PRESENCE CHECK\n\nAre you a real human reading this right now?\n\nReply with ONE word: YES or NO.\n\n— APEX Ghost Protocol\n\nSeal: ${seal}\nTime: ${stamp}`
-    : `WITNESS REGISTRATION\n\nName: ${name || "(not provided)"}\nEmail: ${email}\n\nSeal: ${seal}\nTime: ${stamp}\n\n— APEX Ghost Protocol`;
-
-  // Formspree supports any fields; it will email them to your linked inbox.
-  const formData = new FormData();
-  formData.append("subject", subject);
-  formData.append("name", name);
-  formData.append("email", email);
-  formData.append("kind", kind);
-  formData.append("seal", seal);
-  formData.append("timestamp", stamp);
-  formData.append("message", body);
-
-  setStatus("Status: transmitting signal…", "warn");
-
-  try{
-    const res = await fetch(FORMSPREE_ENDPOINT, {
-      method: "POST",
-      body: formData,
-      headers: { "Accept": "application/json" }
-    });
-
-    if(res.ok){
-      setStatus(kind==="mission" ? "Status: Mission 0 dispatched." : "Status: registration accepted.", "ok");
-      toast(kind==="mission" ? "Mission 0 sent." : "Registered.");
-      addLine("ok", "RECORDED", `${kind==="mission" ? "Mission 0" : "Registration"} sealed • ${seal}`);
-
-      // local UX standing marker
-      const st = getStanding();
-      st.email = email;
-      st.firstSeen = st.firstSeen || stamp;
-      st.lastAction = stamp;
-      st.seal = seal;
-      setStanding(st);
-
-      return { ok:true, seal };
-    } else {
-      const j = await res.json().catch(()=> ({}));
-      setStatus("Status: transmit failed (Formspree).", "bad");
-      toast("Transmit failed.");
-      addLine("bad","ERROR", `Form endpoint rejected. ${(j && j.error) ? j.error : "Check Formspree settings."}`);
-      return { ok:false };
-    }
-  }catch(err){
-    setStatus("Status: network error.", "bad");
-    toast("Network error.");
-    addLine("bad","ERROR", "Network blocked or offline.");
-    return { ok:false };
-  }
-}
-
-/* ==========================
-   MODAL
-========================== */
-function openModal(){
-  $("#modalBack").classList.add("show");
-  // generate founder seal display
-  const s = `FOUNDER.PASS/${rand(4).toUpperCase()}-${Date.now().toString(36).toUpperCase()}\nTIME/${nowISO()}\nNOTE/standing-is-weight`;
-  $("#founderSealBox").textContent = s;
-}
-function closeModal(){
-  $("#modalBack").classList.remove("show");
-}
-
-/* ==========================
-   COPY SIGNAL
-========================== */
-function signalText(){
-  return `👻 APEX — GHOST PROTOCOL: THE WITNESS NETWORK
-When truth becomes scarce, witnesses become infrastructure.
-No mining. No noise. Just confirmation.
-
-Enter: ${location.href}`;
-}
-
-async function copy(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    toast("Copied.");
-    return true;
-  }catch{
-    // fallback
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    toast("Copied.");
-    return true;
-  }
-}
-
-/* ==========================
-   EMAIL DRAFT (local mailto)
-========================== */
-function openEmailDraft(){
-  const sub = encodeURIComponent("👻 Ghost Protocol — Mission 0");
-  const body = encodeURIComponent(`MISSION 0 — PRESENCE CHECK
-
-Are you a real human reading this right now?
-
-Reply with ONE word: YES or NO.
-
-— APEX Ghost Protocol`);
-  window.location.href = `mailto:?subject=${sub}&body=${body}`;
-}
-
-/* ==========================
-   PWA hint (optional)
-========================== */
-function pwaHint(){
-  toast("On Android: menu ⋮ → Add to Home screen.");
-  addLine("warn","PWA","Android: menu ⋮ → Add to Home screen. iOS: Share → Add to Home Screen.");
-}
-
-/* ==========================
-   EVENTS
-========================== */
-document.addEventListener("DOMContentLoaded", ()=>{
-  $("#year").textContent = new Date().getFullYear();
-
-  // top actions
-  $("#btnEnter").addEventListener("click", ()=>scrollToId("registerAnchor"));
-  $("#btnFounder").addEventListener("click", openModal);
-
-  // hero ctas
-  $("#btnScrollRegister").addEventListener("click", ()=>scrollToId("registerAnchor"));
-  $("#btnScrollConsole").addEventListener("click", ()=>scrollToId("consoleAnchor"));
-  $("#btnMissionPreview").addEventListener("click", openModal);
-
-  // console tools
-  $("#btnPing").addEventListener("click", ()=>{
-    const stamp = nowISO();
-    addLine("ok","PRESENCE","Presence ping recorded • " + stamp);
-    toast("Presence pinged.");
-  });
-  $("#btnSeal").addEventListener("click", ()=>{
-    const s = makeSeal();
-    addLine("warn","SEAL", "Seal generated • " + s);
-    toast("Seal generated.");
-  });
-  $("#btnOpenModal").addEventListener("click", openModal);
-  $("#btnClear").addEventListener("click", ()=>{
-    const c = $("#console");
-    c.innerHTML = "";
-    addLine("warn","RESET","Console cleared.");
-    toast("Cleared.");
-  });
-
-  // register section actions
-  $("#btnRegister").addEventListener("click", async ()=>{
-    await submitToFormspree("register");
-  });
-  $("#btnSendMission").addEventListener("click", async ()=>{
-    await submitToFormspree("mission");
-  });
-
-  $("#btnCopySignal").addEventListener("click", ()=>copy(signalText()));
-  $("#btnCopySignal2").addEventListener("click", ()=>copy(signalText()));
-
-  $("#btnScrollTop").addEventListener("click", ()=>window.scrollTo({top:0, behavior:"smooth"}));
-  $("#btnInstallHint").addEventListener("click", pwaHint);
-
-  // modal actions
-  $("#btnClose").addEventListener("click", closeModal);
-  $("#modalBack").addEventListener("click", (e)=>{ if(e.target === $("#modalBack")) closeModal(); });
-
-  $("#btnCopySeal").addEventListener("click", ()=>copy($("#founderSealBox").textContent));
-  $("#btnRegFromModal").addEventListener("click", ()=>{
-    closeModal();
-    scrollToId("registerAnchor");
-  });
-  $("#btnEmailDraft").addEventListener("click", openEmailDraft);
-
-  // initialize
-  const st = getStanding();
-  if(st && st.email){
-    $("#email").value = st.email;
-    setStatus("Status: returning witness detected.", "ok");
-    addLine("ok","RETURN","Returning witness detected • standing preserved (local).");
-  } else {
-    setStatus("Status: ready.", "");
-  }
-
-  // set console subtitle
-  $("#consoleSub").textContent = "ready • endpoint sealed • " + new URL(FORMSPREE_ENDPOINT).pathname.replace("/f/","form/");
-});
-</script>
+</div>
 </body>
 </html>
