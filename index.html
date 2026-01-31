@@ -1,114 +1,247 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>👻 APEX — Ghost Protocol</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>APEX • Ghost Protocol</title>
+  <meta name="description" content="APEX Ghost Protocol — The Witness Network." />
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root{
+      --bg:#05060b;
+      --ink:#e9eefc;
+      --muted:rgba(233,238,252,.72);
+      --dim:rgba(233,238,252,.14);
+      --gold:#f6d36f;
+      --gold2:#ffb84d;
+      --glass:rgba(10,14,26,.42);
+      --glass2:rgba(10,14,26,.22);
+      --stroke:rgba(255,255,255,.08);
+      --shadow:0 22px 70px rgba(0,0,0,.55);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--ink);
+      background: radial-gradient(1200px 700px at 50% 30%, rgba(246,211,111,.16), transparent 55%),
+                  radial-gradient(900px 600px at 15% 70%, rgba(120,170,255,.10), transparent 60%),
+                  radial-gradient(900px 600px at 85% 75%, rgba(255,184,77,.08), transparent 60%),
+                  var(--bg);
+      overflow:hidden;
     }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at top, #0f0f14, #050508);
-      color: #e6e6eb;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      letter-spacing: 0.3px;
+    /* subtle animated starfield */
+    .stars, .stars:before, .stars:after{
+      content:"";
+      position:absolute; inset:-200px;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.55) 40%, transparent 45%),
+        radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,.35) 40%, transparent 45%),
+        radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,.30) 40%, transparent 45%),
+        radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,.20) 40%, transparent 45%),
+        radial-gradient(1px 1px at 10% 65%, rgba(255,255,255,.18) 40%, transparent 45%),
+        radial-gradient(1px 1px at 55% 55%, rgba(255,255,255,.14) 40%, transparent 45%);
+      opacity:.7;
+      animation: drift 18s linear infinite;
+      transform: translate3d(0,0,0);
+      pointer-events:none;
+    }
+    .stars:before{opacity:.45; filter: blur(.3px); animation-duration: 28s}
+    .stars:after{opacity:.30; filter: blur(.6px); animation-duration: 42s}
+    @keyframes drift{
+      from{transform:translate3d(-2%, -1%, 0)}
+      to  {transform:translate3d( 2%,  1%, 0)}
     }
 
-    .container {
-      max-width: 720px;
-      padding: 40px;
+    .wrap{
+      position:relative;
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding:28px 18px;
     }
 
-    .sigil {
-      font-size: 48px;
-      margin-bottom: 24px;
-      opacity: 0.9;
+    .card{
+      width:min(720px, 92vw);
+      padding:34px 22px 26px;
+      border:1px solid var(--stroke);
+      background: linear-gradient(180deg, var(--glass), var(--glass2));
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
     }
 
-    h1 {
-      font-size: 42px;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 16px;
+    /* gold aura ring */
+    .card:before{
+      content:"";
+      position:absolute; inset:-120px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(246,211,111,.22), transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(255,184,77,.10), transparent 65%);
+      filter: blur(10px);
+      opacity:.9;
+      pointer-events:none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{transform:scale(1); opacity:.75}
+      50%{transform:scale(1.04); opacity:.95}
     }
 
-    h2 {
-      font-size: 18px;
-      font-weight: 400;
-      opacity: 0.75;
-      margin-bottom: 48px;
+    .sigil{
+      width:52px; height:52px;
+      display:grid; place-items:center;
+      margin:0 auto 10px;
+      border-radius: 16px;
+      border:1px solid rgba(246,211,111,.22);
+      background: rgba(0,0,0,.25);
+      box-shadow: 0 0 0 6px rgba(246,211,111,.06);
+      position:relative;
+    }
+    .sigil span{font-size:26px; filter: drop-shadow(0 0 14px rgba(246,211,111,.55));}
+
+    h1{
+      margin:8px 0 0;
+      font-size: 34px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      position:relative;
+      z-index:1;
+    }
+    .sub{
+      margin:8px 0 18px;
+      font-size:12px;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      color:rgba(233,238,252,.55);
+      position:relative;
+      z-index:1;
     }
 
-    .statement {
-      font-size: 20px;
-      font-weight: 300;
-      line-height: 1.6;
-      opacity: 0.85;
-      margin-bottom: 56px;
+    .line{
+      max-width: 42ch;
+      margin: 0 auto 18px;
+      color: var(--muted);
+      line-height:1.55;
+      font-size:15px;
+      position:relative;
+      z-index:1;
     }
 
-    .cta {
-      display: inline-block;
-      padding: 14px 28px;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
+    .tri{
+      margin:16px auto 18px;
+      display:grid;
+      gap:8px;
+      color:rgba(233,238,252,.72);
+      font-size:14px;
+      position:relative;
+      z-index:1;
+    }
+    .tri b{
+      color:rgba(246,211,111,.95);
+      font-weight:700;
+      letter-spacing:.02em;
     }
 
-    .cta:hover {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(255,255,255,0.4);
+    .ctaRow{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+      position:relative;
+      z-index:1;
+      margin-top: 16px;
     }
 
-    .footer {
-      margin-top: 64px;
-      font-size: 12px;
-      opacity: 0.4;
+    .btn{
+      border:1px solid rgba(246,211,111,.28);
+      background: linear-gradient(180deg, rgba(246,211,111,.14), rgba(246,211,111,.06));
+      color:var(--ink);
+      padding:14px 16px;
+      border-radius: 14px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      font-size:12px;
+      cursor:pointer;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+      min-width: 240px;
     }
+    .btn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(246,211,111,.55);
+      box-shadow: 0 10px 30px rgba(246,211,111,.12);
+      background: linear-gradient(180deg, rgba(246,211,111,.20), rgba(246,211,111,.08));
+    }
+    .btn.secondary{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      min-width: 180px;
+      color: rgba(233,238,252,.85);
+    }
+    .btn.secondary:hover{
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    .foot{
+      margin-top:18px;
+      font-size:11px;
+      color:rgba(233,238,252,.35);
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      position:relative;
+      z-index:1;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:26px;
+      transform:translateX(-50%);
+      background: rgba(12,16,30,.78);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px 14px;
+      color:rgba(233,238,252,.88);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+      max-width:min(520px, 92vw);
+      font-size:13px;
+      line-height:1.35;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-4px);
+    }
+    a{color:inherit}
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="sigil">👻</div>
+  <div class="stars"></div>
 
-    <h1>APEX<br>GHOST PROTOCOL</h1>
-    <h2>THE WITNESS NETWORK</h2>
+  <main class="wrap">
+    <section class="card" aria-label="APEX Ghost Protocol">
+      <div class="sigil"><span>👻</span></div>
+      <h1>APEX<br/>GHOST PROTOCOL</h1>
+      <div class="sub">THE WITNESS NETWORK</div>
 
-    <div class="statement">
-      When truth becomes scarce,<br>
-      witnesses become infrastructure.<br><br>
+      <p class="line">
+        When truth becomes scarce, witnesses become infrastructure.
+        <br/>Ghost Protocol is a distributed network of human presence, agreement, and proof.
+      </p>
 
-      Ghost Protocol is a distributed network<br>
-      of human presence, agreement, and proof.<br><br>
+      <div class="tri">
+        <div><b>No mining.</b></div>
+        <div><b>No noise.</b></div>
+        <div><b>Just confirmation.</b></div>
+      </div>
 
-      No mining.<br>
-      No noise.<br>
-      Just confirmation.
-    </div>
-
-    <a class="cta" href="#" onclick="alert('Witness enrollment opens soon.')">
-      JOIN THE WITNESS NETWORK
-    </a>
-
-    <div class="footer">
-      APEX · Own the Record
-    </div>
-  </div>
-</body>
-</html>
+      <div class="ctaRow">
+        <button class="btn" id
