@@ -1,854 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>👻 APEX — Ghost Protocol: The Witness Network</title>
-  <meta name="description" content="Ghost Protocol is a distributed witness network for human presence, agreement, and proof. No mining. No noise. Just confirmation." />
-  <meta name="theme-color" content="#0a0712" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>APEX — Ghost Protocol</title>
 
-  <style>
-    :root{
-      --bg:#05030a;
-      --bg2:#0b0716;
-      --card: rgba(255,255,255,.06);
-      --card2: rgba(255,255,255,.09);
-      --stroke: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.70);
-      --faint: rgba(255,255,255,.55);
-      --gold:#f7c86a;
-      --gold2:#ffdf9a;
-      --violet:#7b61ff;
-      --cyan:#58d1ff;
-      --danger:#ff5a7a;
-      --ok:#57ffbf;
-      --shadow: 0 30px 80px rgba(0,0,0,.65);
-      --radius: 26px;
-      --radius2: 18px;
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: var(--sans);
-      background:
-        radial-gradient(1200px 900px at 65% 15%, rgba(255,208,110,.16), transparent 55%),
-        radial-gradient(1000px 800px at 15% 25%, rgba(120,96,255,.14), transparent 60%),
-        radial-gradient(1100px 900px at 40% 95%, rgba(88,209,255,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      color: var(--text);
-      overflow-x:hidden;
-    }
+<style>
+:root{
+  --bg:#0b0d12;
+  --card:rgba(255,255,255,0.06);
+  --border:rgba(255,255,255,0.12);
+  --text:#e9e9ee;
+  --muted:#a6a6b3;
+  --gold:#f5c26b;
+}
 
-    /* starfield canvas */
-    #stars{position:fixed; inset:0; z-index:0; opacity:.95}
-    #fog{position:fixed; inset:-20vmax; z-index:1; pointer-events:none;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(255,200,106,.18), transparent 40%),
-        radial-gradient(circle at 70% 20%, rgba(120,96,255,.18), transparent 45%),
-        radial-gradient(circle at 55% 75%, rgba(88,209,255,.16), transparent 45%);
-      filter: blur(40px);
-      mix-blend-mode: screen;
-      animation: drift 14s ease-in-out infinite alternate;
-      opacity:.55;
-    }
-    @keyframes drift{
-      0%{transform:translate3d(-2%, -1%,0) scale(1.02)}
-      100%{transform:translate3d(2%, 1%,0) scale(1.05)}
-    }
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,system-ui;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(245,194,107,.12), transparent),
+    radial-gradient(900px 500px at 10% 10%, rgba(120,140,255,.12), transparent),
+    var(--bg);
+  color:var(--text);
+}
 
-    .wrap{position:relative; z-index:2; max-width:1100px; margin:0 auto; padding:28px 18px 90px}
-    .topbar{
-      display:flex; align-items:center; justify-content:space-between; gap:14px;
-      padding:10px 6px 18px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-    }
-    .mark{
-      width:44px; height:44px; border-radius:14px;
-      background: radial-gradient(circle at 30% 25%, rgba(255,223,154,.35), rgba(255,255,255,.06) 55%),
-                  linear-gradient(135deg, rgba(255,200,106,.22), rgba(120,96,255,.16));
-      border: 1px solid rgba(255,255,255,.14);
-      box-shadow: 0 18px 50px rgba(0,0,0,.55);
-      display:grid; place-items:center;
-      position:relative;
-      overflow:hidden;
-    }
-    .mark::after{
-      content:"";
-      position:absolute; inset:-80%;
-      background: conic-gradient(from 180deg, transparent, rgba(255,200,106,.55), transparent);
-      animation: spin 6s linear infinite;
-      opacity:.7;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .mark span{
-      position:relative; z-index:1;
-      font-size:22px;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.6));
-    }
-    .brand .txt{line-height:1.05}
-    .brand .txt .a{font-weight:800; letter-spacing:.16em; font-size:12px; color: rgba(255,255,255,.75)}
-    .brand .txt .b{font-weight:800; font-size:14px}
-    .pill{
-      display:flex; align-items:center; gap:8px;
-      padding:10px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      font-size:12px;
-      color: rgba(255,255,255,.72);
-      user-select:none;
-    }
-    .dot{width:8px;height:8px;border-radius:999px;background:var(--ok); box-shadow:0 0 18px rgba(87,255,191,.65)}
-    .sep{opacity:.4}
-    .pill strong{color: rgba(255,255,255,.9); font-weight:700}
+.container{
+  max-width:760px;
+  margin:auto;
+  padding:60px 18px 100px;
+}
 
-    .hero{
-      margin-top:12px;
-      padding:22px 0 8px;
-    }
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:18px;
-      align-items:stretch;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr; }
-    }
+.hero{
+  text-align:center;
+  margin-bottom:60px;
+}
 
-    .card{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
-      position:relative;
-      overflow:hidden;
-    }
-    .card::before{
-      content:"";
-      position:absolute; inset:-2px;
-      background:
-        radial-gradient(900px 500px at 35% 15%, rgba(255,200,106,.22), transparent 55%),
-        radial-gradient(700px 500px at 75% 25%, rgba(120,96,255,.20), transparent 60%),
-        radial-gradient(900px 600px at 55% 90%, rgba(88,209,255,.16), transparent 60%);
-      opacity:.65;
-      filter: blur(10px);
-      pointer-events:none;
-    }
-    .card > *{position:relative; z-index:1}
+.badge{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  padding:8px 14px;
+  border-radius:999px;
+  background:var(--card);
+  border:1px solid var(--border);
+  margin-bottom:18px;
+}
 
-    .heroCard{padding:28px 26px}
-    .kicker{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:9px 12px; border-radius:999px;
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.75);
-      font-size:12px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-    }
-    .kicker .chipDot{
-      width:7px;height:7px;border-radius:999px;background:var(--gold);
-      box-shadow: 0 0 18px rgba(247,200,106,.55);
-    }
-    h1{
-      margin:14px 0 10px;
-      font-size: clamp(34px, 4.4vw, 56px);
-      line-height:1.02;
-      letter-spacing:.02em;
-    }
-    .grad{
-      background: linear-gradient(90deg, rgba(255,255,255,.94), rgba(255,223,154,.92), rgba(88,209,255,.86));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      text-shadow: 0 18px 70px rgba(0,0,0,.45);
-    }
-    .sub{
-      max-width: 64ch;
-      color: rgba(255,255,255,.76);
-      font-size:16px;
-      line-height:1.5;
-      margin:0 0 18px;
-    }
-    .tagline{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin: 18px 0 0;
-    }
-    .tag{
-      padding:10px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.78);
-      font-size:13px;
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .tag b{color: rgba(255,223,154,.95)}
-    .tag i{
-      width:8px;height:8px;border-radius:999px;
-      background: rgba(255,223,154,.85);
-      box-shadow: 0 0 18px rgba(255,223,154,.55);
-      display:inline-block;
-    }
+.badge span{
+  font-size:12px;
+  letter-spacing:.12em;
+  color:var(--muted);
+}
 
-    .sideCard{padding:18px}
-    .sideHead{
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-      margin-bottom:10px;
-    }
-    .sideHead h3{margin:0; font-size:14px; letter-spacing:.16em; text-transform:uppercase; color: rgba(255,255,255,.70)}
-    .smallHint{
-      font-size:12px; color: rgba(255,255,255,.62);
-      padding:8px 10px; border-radius:999px;
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .steps{
-      display:grid; gap:10px; margin:10px 0 14px;
-    }
-    .step{
-      border-radius:18px;
-      padding:12px 12px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.12);
-      display:flex; gap:10px; align-items:flex-start;
-    }
-    .num{
-      width:26px;height:26px;border-radius:9px;
-      display:grid; place-items:center;
-      background: rgba(255,223,154,.10);
-      border:1px solid rgba(255,223,154,.20);
-      color: rgba(255,223,154,.95);
-      font-family: var(--mono);
-      font-size:12px;
-      flex:0 0 auto;
-    }
-    .step .t{font-weight:700; color: rgba(255,255,255,.88); font-size:13px; margin:0 0 2px}
-    .step .d{margin:0; color: rgba(255,255,255,.66); font-size:13px; line-height:1.35}
+h1{
+  font-size:40px;
+  margin:10px 0 12px;
+  font-weight:800;
+  letter-spacing:-.03em;
+}
 
-    .ctaRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
-    .btn{
-      appearance:none; border:0;
-      border-radius: 16px;
-      padding:12px 14px;
-      font-weight:800;
-      letter-spacing:.02em;
-      cursor:pointer;
-      color: rgba(0,0,0,.86);
-      background: linear-gradient(135deg, rgba(255,223,154,.95), rgba(247,200,106,.88));
-      box-shadow: 0 18px 60px rgba(247,200,106,.18);
-      transition: transform .15s ease, filter .15s ease;
-      display:inline-flex; align-items:center; gap:10px;
-      user-select:none;
-    }
-    .btn:hover{transform: translateY(-1px); filter: brightness(1.05)}
-    .btn:active{transform: translateY(1px)}
-    .btn.secondary{
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.14);
-      color: rgba(255,255,255,.88);
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-    }
-    .btn.ghost{
-      background: rgba(0,0,0,.25);
-      border:1px solid rgba(255,223,154,.20);
-      color: rgba(255,223,154,.92);
-    }
+h1 span{color:var(--gold)}
 
-    .section{margin-top:18px}
-    .cols{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .cols{grid-template-columns:1fr}
-    }
-    .feat{padding:18px}
-    .icon{
-      width:40px;height:40px;border-radius:14px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-      display:grid; place-items:center;
-      box-shadow: 0 20px 60px rgba(0,0,0,.35);
-      margin-bottom:10px;
-      font-size:18px;
-    }
-    .feat h4{margin:0 0 8px; font-size:16px}
-    .feat p{margin:0; color: rgba(255,255,255,.68); line-height:1.45; font-size:14px}
+.tagline{
+  font-size:18px;
+  color:var(--muted);
+  max-width:520px;
+  margin:0 auto 22px;
+}
 
-    .register{
-      padding:18px;
-    }
-    .register h3{
-      margin:0 0 10px;
-      font-size:14px;
-      letter-spacing:.16em;
-      text-transform:uppercase;
-      color: rgba(255,255,255,.72);
-    }
-    .field{display:grid; gap:8px; margin:10px 0}
-    label{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color: rgba(255,255,255,.62)}
-    input{
-      width:100%;
-      padding:14px 14px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.25);
-      color: rgba(255,255,255,.92);
-      outline:none;
-      font-size:15px;
-    }
-    input::placeholder{color: rgba(255,255,255,.45)}
-    .note{color: rgba(255,255,255,.62); font-size:13px; line-height:1.45; margin-top:10px}
-    .divider{
-      height:1px; background: rgba(255,255,255,.10);
-      margin:14px 0;
-    }
-    .mini{
-      display:flex; gap:10px; flex-wrap:wrap;
-    }
-    .mini .tag{font-size:12px; padding:9px 11px}
-    .statusBox{
-      border-radius:18px;
-      padding:12px 12px;
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.72);
-      font-size:12px;
-      line-height:1.45;
-      margin-top:10px;
-      font-family: var(--mono);
-      white-space:pre-wrap;
-    }
-    .ok{color: rgba(87,255,191,.92)}
-    .warn{color: rgba(255,223,154,.92)}
-    .bad{color: rgba(255,90,122,.92)}
+.pill{
+  display:inline-block;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--card);
+  font-size:14px;
+}
 
-    details{
-      border-radius:18px;
-      padding:12px 12px;
-      background: rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    details + details{margin-top:10px}
-    summary{cursor:pointer; font-weight:800; color: rgba(255,255,255,.88)}
-    details p{margin:10px 0 0; color: rgba(255,255,255,.68); line-height:1.5}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin:60px 0;
+}
 
-    footer{
-      margin-top:22px;
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      color: rgba(255,255,255,.55);
-      font-size:12px;
-      padding:12px 6px 0;
-    }
-    footer a{color: rgba(255,223,154,.86); text-decoration:none}
-    footer a:hover{text-decoration:underline}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+}
 
-    /* floating "scroll to top" */
-    .toTop{
-      position:fixed;
-      right:16px;
-      bottom:16px;
-      z-index:5;
-      width:48px;height:48px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.35);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 24px 70px rgba(0,0,0,.5);
-      color: rgba(255,255,255,.86);
-      cursor:pointer;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      font-size:18px;
-    }
-    .toTop.show{display:flex}
+.card h3{
+  margin:0 0 6px;
+  font-size:16px;
+}
 
-    /* subtle entrance */
-    .fadeUp{opacity:0; transform:translateY(10px); transition: opacity .6s ease, transform .6s ease}
-    .fadeUp.on{opacity:1; transform:translateY(0)}
-  </style>
+.card p{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+}
+
+.section-title{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.section-sub{
+  color:var(--muted);
+  margin-bottom:20px;
+}
+
+form{
+  display:grid;
+  gap:14px;
+}
+
+input{
+  width:100%;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(0,0,0,.35);
+  color:var(--text);
+  font-size:15px;
+}
+
+.actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+button{
+  padding:14px 18px;
+  border-radius:14px;
+  border:none;
+  font-size:15px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.primary{
+  background:linear-gradient(135deg,var(--gold),#ffdd9a);
+  color:#000;
+}
+
+.secondary{
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+
+.note{
+  font-size:13px;
+  color:var(--muted);
+}
+
+footer{
+  text-align:center;
+  margin-top:80px;
+  color:var(--muted);
+  font-size:12px;
+}
+</style>
 </head>
 
 <body>
-  <canvas id="stars"></canvas>
-  <div id="fog"></div>
+<div class="container">
 
-  <div class="wrap">
-    <div class="topbar fadeUp">
-      <div class="brand">
-        <div class="mark"><span>👻</span></div>
-        <div class="txt">
-          <div class="a">APEX</div>
-          <div class="b">Ghost Protocol</div>
-        </div>
-      </div>
-
-      <div class="pill" title="Network status">
-        <span class="dot"></span>
-        <span><strong>LIVE</strong> <span class="sep">•</span> Registration</span>
-      </div>
-    </div>
-
-    <div class="hero">
-      <div class="grid">
-        <!-- HERO -->
-        <div class="card heroCard fadeUp">
-          <div class="kicker"><span class="chipDot"></span> Witness Infrastructure</div>
-          <h1 class="grad">GHOST PROTOCOL<br/>THE WITNESS NETWORK</h1>
-          <p class="sub">
-            When truth becomes scarce, <b>witnesses become infrastructure</b>.
-            Ghost Protocol is a distributed network of <b>human presence</b>, <b>agreement</b>, and <b>proof</b> — quiet, lightweight, and undeniable.
-          </p>
-
-          <div class="tagline">
-            <span class="tag"><i></i> <b>No mining.</b> No noise. Just confirmation.</span>
-            <span class="tag"><i></i> 1-tap confirmations</span>
-            <span class="tag"><i></i> presence proofs</span>
-            <span class="tag"><i></i> consensus snapshots</span>
-            <span class="tag"><i></i> timestamped record</span>
-            <span class="tag"><i></i> boring by design</span>
-          </div>
-
-          <div class="ctaRow">
-            <button class="btn" id="jumpRegister">⚡ Register Now</button>
-            <button class="btn secondary" id="jumpHow">🧭 How it Works</button>
-            <button class="btn ghost" id="founderBtn">✨ Founder Pass</button>
-          </div>
-        </div>
-
-        <!-- SIDE: LOOP -->
-        <div class="card sideCard fadeUp">
-          <div class="sideHead">
-            <h3>The Witness Loop</h3>
-            <div class="smallHint">under 5 seconds</div>
-          </div>
-          <div class="steps">
-            <div class="step">
-              <div class="num">01</div>
-              <div>
-                <p class="t">Register</p>
-                <p class="d">You join the network. Minimal details. Zero spam.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="num">02</div>
-              <div>
-                <p class="t">Mission 0</p>
-                <p class="d">A single tap: <b>YES / NO</b>. Presence confirmed.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="num">03</div>
-              <div>
-                <p class="t">Consensus Snapshot</p>
-                <p class="d">Many taps converge into a timestamped record.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-          <div class="mini">
-            <span class="tag"><b>Quiet</b> by design</span>
-            <span class="tag">Battery-light</span>
-            <span class="tag">Human-first proof</span>
-          </div>
-
-          <div class="statusBox" id="configBox"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="section">
-      <div class="cols">
-        <div class="card feat fadeUp">
-          <div class="icon">🧿</div>
-          <h4>Presence Proof</h4>
-          <p>Light “I was here” attestations. No background mining. No battery drain. Just witness.</p>
-        </div>
-        <div class="card feat fadeUp">
-          <div class="icon">🧾</div>
-          <h4>Receipts for Reality</h4>
-          <p>Audit-friendly outputs: what was believed, when, and by how many independent witnesses.</p>
-        </div>
-        <div class="card feat fadeUp">
-          <div class="icon">🪶</div>
-          <h4>Consensus Snapshots</h4>
-          <p>Disagreement is preserved, not erased. Truth is recorded as a durable timestamped consensus trail.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- HOW -->
-    <div class="section" id="how">
-      <div class="grid">
-        <div class="card heroCard fadeUp">
-          <div class="kicker"><span class="chipDot"></span> What you do</div>
-          <h2 style="margin:14px 0 10px; font-size:28px; line-height:1.15;">Tiny confirmations become permanent record.</h2>
-          <p class="sub" style="margin-bottom:0;">
-            You receive “missions.” Each mission is a tiny confirmation: <b>yes/no</b>, <b>agree/disagree</b>, <b>present/not present</b>.
-            Many independent confirmations create a durable record.
-          </p>
-          <div class="divider"></div>
-          <p class="note">
-            <b>Important:</b> Ghost Protocol does not ask you to “work.” It asks you to <b>witness</b>.
-            Quiet systems scale because they don’t demand attention.
-          </p>
-        </div>
-
-        <!-- REGISTER -->
-        <div class="card register fadeUp" id="register">
-          <h3>Register Now</h3>
-
-          <form id="regForm">
-            <div class="field">
-              <label for="name">Name (optional)</label>
-              <input id="name" name="name" autocomplete="name" placeholder="Your name" />
-            </div>
-
-            <div class="field">
-              <label for="email">Email (required)</label>
-              <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@domain.com" />
-            </div>
-
-            <div class="ctaRow">
-              <button class="btn" type="submit" id="regBtn">👻 Register</button>
-              <button class="btn secondary" type="button" id="missionBtn">📨 Send Mission 0</button>
-            </div>
-
-            <p class="note" id="afterText">
-              <b>What happens next:</b><br/>
-              • You receive <b>Mission 0</b> by email<br/>
-              • It takes <b>under 5 seconds</b><br/>
-              • Your confirmation becomes part of a durable record<br/>
-              • Your standing begins immediately
-            </p>
-          </form>
-
-          <div class="statusBox" id="status">Status: <span class="warn">Awaiting registration.</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FAQ -->
-    <div class="section">
-      <div class="card heroCard fadeUp">
-        <div class="kicker"><span class="chipDot"></span> FAQ</div>
-        <div style="margin-top:14px; display:grid; gap:10px;">
-          <details>
-            <summary>What is Ghost Protocol in one sentence?</summary>
-            <p>A network where humans do tiny confirmations that become a durable timestamped record of consensus.</p>
-          </details>
-          <details>
-            <summary>Do I need to install an app?</summary>
-            <p>No. Registration is web-based. Later, missions can be delivered as simple links and 1-tap forms.</p>
-          </details>
-          <details>
-            <summary>How does registration work?</summary>
-            <p>You register once. The operator inbox receives your entry. You can then receive Mission 0 and future missions.</p>
-          </details>
-          <details>
-            <summary>What is Founder Pass?</summary>
-            <p>An early access flag for the first wave. It’s optional. It exists to mark early standing and keep the network tight.</p>
-          </details>
-        </div>
-      </div>
-    </div>
-
-    <footer class="fadeUp">
-      <div>© <span id="year"></span> APEX • GHOST PROTOCOL • <span style="color:rgba(255,223,154,.86)">Own the record.</span></div>
-      <div style="display:flex; gap:12px;">
-        <a href="#" id="openGit">GitHub</a>
-        <a href="#" id="openX">X</a>
-      </div>
-    </footer>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge">👻 <span>WITNESS INFRASTRUCTURE</span></div>
+    <h1>GHOST PROTOCOL<br><span>THE WITNESS NETWORK</span></h1>
+    <p class="tagline">
+      When truth becomes scarce, witnesses become infrastructure.
+      A quiet network of human presence, agreement, and proof.
+    </p>
+    <div class="pill">No mining · No noise · Just confirmation</div>
   </div>
 
-  <button class="toTop" id="toTop" title="Top">↑</button>
+  <!-- WHAT IT DOES -->
+  <div class="grid">
+    <div class="card">
+      <h3>Presence Proof</h3>
+      <p>“I was here” attestations. No battery drain. No background tasks.</p>
+    </div>
+    <div class="card">
+      <h3>1-Tap Missions</h3>
+      <p>Yes / No · Agree / Disagree · Present / Not present.</p>
+    </div>
+    <div class="card">
+      <h3>Consensus Snapshots</h3>
+      <p>Independent taps converge into a timestamped record.</p>
+    </div>
+    <div class="card">
+      <h3>Receipts for Reality</h3>
+      <p>What was believed, when, and by how many witnesses.</p>
+    </div>
+  </div>
 
-  <script>
-    /*************************************************************
-     * ✅ ONLY THINGS YOU EDIT (3 lines)
-     *************************************************************/
-    const OPERATOR_EMAIL = "YOUR_EMAIL_HERE@example.com";
+  <!-- REGISTER -->
+  <div class="card">
+    <div class="section-title">Register as a Witness</div>
+    <div class="section-sub">
+      You do not work. You witness. Registration takes under 5 seconds.
+    </div>
 
-    // OPTION A (Recommended): Formspree endpoint (creates a real inbox)
-    // Create at formspree.io -> New Form -> get endpoint like: https://formspree.io/f/xxxxxx
-    const FORM_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+    <form action="https://formspree.io/f/mwvbjvap" method="POST">
+      <input type="text" name="name" placeholder="Name (optional)">
+      <input type="email" name="email" placeholder="Email (required)" required>
+      <input type="hidden" name="source" value="Ghost Protocol Landing">
+      <input type="hidden" name="mission" value="MISSION 0 — Presence Check">
 
-    // Optional: Founder Pass link (Stripe/Gumroad). Leave blank to hide button.
-    const FOUNDER_PASS_URL = "";
+      <div class="actions">
+        <button class="primary" type="submit">👻 Register</button>
+        <button class="secondary" type="submit">📨 Send Mission 0</button>
+      </div>
+    </form>
 
-    /*************************************************************
-     * Social links (optional)
-     *************************************************************/
-    const GITHUB_REPO_URL = "https://github.com/kawal393";
-    const X_URL = "https://x.com/";
+    <div class="note">
+      Zero spam. One signal. Mission 0 is sent by email immediately.
+    </div>
+  </div>
 
-    /*************************************************************
-     * UX + Config validation (no editing needed)
-     *************************************************************/
-    const isPlaceholder = (s) => !s || s.includes("YOUR_") || s.includes("example.com") || s.includes("YOUR_FORM_ID");
+  <!-- FAQ -->
+  <div class="card" style="margin-top:40px">
+    <div class="section-title">FAQ</div>
+    <p><b>What is Ghost Protocol?</b><br>
+    A network where tiny human confirmations become durable public records.</p>
 
-    const configBox = document.getElementById("configBox");
-    const statusBox = document.getElementById("status");
-    const founderBtn = document.getElementById("founderBtn");
+    <p><b>Do I need to install an app?</b><br>
+    No. Phone = key. Email = channel.</p>
 
-    function setStatus(text, cls){
-      statusBox.innerHTML = "Status: <span class='" + cls + "'>" + text + "</span>";
-    }
+    <p><b>What is Mission 0?</b><br>
+    A single presence check to anchor your standing.</p>
+  </div>
 
-    function renderConfig(){
-      let lines = [];
-      lines.push("CONFIG CHECK:");
-      lines.push("- Operator email: " + (isPlaceholder(OPERATOR_EMAIL) ? "MISSING" : "OK"));
-      lines.push("- Register endpoint: " + (isPlaceholder(FORM_ENDPOINT) ? "MISSING" : "OK"));
-      lines.push("- Founder pass: " + (FOUNDER_PASS_URL ? "ON" : "OFF"));
-      lines.push("");
-      lines.push("If email/endpoint is missing, registration can’t deliver.");
-      lines.push("Fix the 3 lines at top, refresh.");
+  <footer>
+    © 2026 APEX · GHOST PROTOCOL · <span style="color:var(--gold)">Own the record.</span>
+  </footer>
 
-      const ok = (!isPlaceholder(OPERATOR_EMAIL) && !isPlaceholder(FORM_ENDPOINT));
-      configBox.innerHTML =
-        (ok ? "<span class='ok'>READY.</span>\n" : "<span class='bad'>NOT READY.</span>\n") +
-        lines.join("\n");
-
-      // Hide Founder Pass if no link
-      if(!FOUNDER_PASS_URL){
-        founderBtn.style.display = "none";
-      }
-    }
-    renderConfig();
-
-    /*************************************************************
-     * Smooth scroll
-     *************************************************************/
-    const jumpRegister = document.getElementById("jumpRegister");
-    const jumpHow = document.getElementById("jumpHow");
-    jumpRegister.addEventListener("click", () => document.getElementById("register").scrollIntoView({behavior:"smooth"}));
-    jumpHow.addEventListener("click", () => document.getElementById("how").scrollIntoView({behavior:"smooth"}));
-
-    /*************************************************************
-     * Founder Pass
-     *************************************************************/
-    founderBtn.addEventListener("click", () => {
-      if(!FOUNDER_PASS_URL){
-        alert("Founder Pass is not enabled yet.");
-        return;
-      }
-      window.open(FOUNDER_PASS_URL, "_blank");
-    });
-
-    /*************************************************************
-     * Registration logic
-     * - Posts to Formspree (Option A)
-     * - Also can fall back to mailto if endpoint missing
-     *************************************************************/
-    const regForm = document.getElementById("regForm");
-    const regBtn = document.getElementById("regBtn");
-    const missionBtn = document.getElementById("missionBtn");
-
-    function mission0Mailto(email){
-      const subject = encodeURIComponent("👻 Ghost Protocol — Mission 0");
-      const body = encodeURIComponent(
-`MISSION 0 — PRESENCE CHECK
-
-Are you a real human reading this right now?
-
-Reply with ONE word:
-YES  or  NO
-
-— APEX Ghost Protocol`
-      );
-      // sends to user (and you can CC yourself if you want)
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-    }
-
-    function operatorMailto(name, email){
-      const subject = encodeURIComponent("👻 New Witness Registration");
-      const body = encodeURIComponent(
-`NEW WITNESS REGISTERED
-
-Name: ${name || "(none)"}
-Email: ${email}
-
-Next:
-- Send Mission 0
-- Add to witness list`
-      );
-      window.location.href = `mailto:${OPERATOR_EMAIL}?subject=${subject}&body=${body}`;
-    }
-
-    regForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = (document.getElementById("name").value || "").trim();
-      const email = (document.getElementById("email").value || "").trim();
-
-      if(!email){
-        setStatus("Email required.", "bad");
-        return;
-      }
-
-      // Block if config is not ready
-      if(isPlaceholder(OPERATOR_EMAIL) || isPlaceholder(FORM_ENDPOINT)){
-        setStatus("Set OPERATOR_EMAIL + FORM_ENDPOINT at top.", "bad");
-        alert("Set OPERATOR_EMAIL and FORM_ENDPOINT at top of the code, then refresh.");
-        return;
-      }
-
-      regBtn.disabled = true;
-      regBtn.textContent = "⏳ Registering…";
-      setStatus("Sending registration…", "warn");
-
-      try{
-        const payload = {
-          name,
-          email,
-          source: window.location.href,
-          timestamp: new Date().toISOString(),
-          product: "APEX Ghost Protocol — Witness Network"
-        };
-
-        const res = await fetch(FORM_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        if(!res.ok){
-          throw new Error("Endpoint error");
-        }
-
-        setStatus("Registered. Mission 0 is ready.", "ok");
-        regBtn.textContent = "✅ Registered";
-
-        // Optional: instantly open Mission 0 email to user
-        // If you don't want this auto-open, comment out next line:
-        mission0Mailto(email);
-
-      }catch(err){
-        setStatus("Registration failed. Falling back to email.", "warn");
-        // fallback to mailto operator so you still capture the lead
-        operatorMailto(name, email);
-      }finally{
-        regBtn.disabled = false;
-        regBtn.textContent = "👻 Register";
-      }
-    });
-
-    missionBtn.addEventListener("click", () => {
-      const email = (document.getElementById("email").value || "").trim();
-      if(!email){
-        alert("Enter your email first, then tap Mission 0.");
-        return;
-      }
-      mission0Mailto(email);
-    });
-
-    /*************************************************************
-     * Footer links
-     *************************************************************/
-    document.getElementById("openGit").addEventListener("click", (e) => { e.preventDefault(); window.open(GITHUB_REPO_URL, "_blank"); });
-    document.getElementById("openX").addEventListener("click", (e) => { e.preventDefault(); window.open(X_URL, "_blank"); });
-
-    /*************************************************************
-     * Top button
-     *************************************************************/
-    const toTop = document.getElementById("toTop");
-    window.addEventListener("scroll", () => {
-      if(window.scrollY > 600) toTop.classList.add("show");
-      else toTop.classList.remove("show");
-    });
-    toTop.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
-
-    /*************************************************************
-     * Entrance animations
-     *************************************************************/
-    const obs = new IntersectionObserver((entries)=>{
-      for(const en of entries){
-        if(en.isIntersecting) en.target.classList.add("on");
-      }
-    }, {threshold:.12});
-    document.querySelectorAll(".fadeUp").forEach(el => obs.observe(el));
-
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    /*************************************************************
-     * Starfield (majestic background, lightweight)
-     *************************************************************/
-    const canvas = document.getElementById("stars");
-    const ctx = canvas.getContext("2d", { alpha: true });
-
-    let w,h,stars;
-    function resize(){
-      w = canvas.width = window.innerWidth * devicePixelRatio;
-      h = canvas.height = window.innerHeight * devicePixelRatio;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-      makeStars();
-    }
-    function rand(min,max){ return Math.random()*(max-min)+min; }
-    function makeStars(){
-      const count = Math.floor((window.innerWidth * window.innerHeight) / 9000);
-      stars = new Array(count).fill(0).map(()=>({
-        x: rand(0,w),
-        y: rand(0,h),
-        r: rand(.6, 1.8) * devicePixelRatio,
-        a: rand(.15, .8),
-        v: rand(.02, .12) * devicePixelRatio,
-        tw: rand(0, 10)
-      }));
-    }
-    function draw(){
-      ctx.clearRect(0,0,w,h);
-      // soft gradient haze
-      const g = ctx.createRadialGradient(w*0.6, h*0.18, 0, w*0.6, h*0.18, Math.max(w,h)*0.7);
-      g.addColorStop(0, "rgba(255,223,154,0.06)");
-      g.addColorStop(0.4, "rgba(120,96,255,0.05)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0,0,w,h);
-
-      for(const s of stars){
-        s.tw += 0.02;
-        const twinkle = (Math.sin(s.tw) + 1) / 2; // 0..1
-        const alpha = s.a * (0.55 + twinkle*0.6);
-
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fill();
-
-        s.y += s.v;
-        if(s.y > h + 10){
-          s.y = -10;
-          s.x = rand(0,w);
-        }
-      }
-      requestAnimationFrame(draw);
-    }
-
-    window.addEventListener("resize", resize);
-    resize();
-    draw();
-  </script>
+</div>
 </body>
 </html>
