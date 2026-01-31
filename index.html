@@ -1,443 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>APEX Ghost Protocol — The Witness Network</title>
-  <meta name="description" content="A distributed witness network for human presence, agreement, and proof. No mining. No noise. Just confirmation." />
+<meta charset="UTF-8">
+<title>APEX GHOST PROTOCOL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="APEX Ghost Protocol — The Witness Network" />
-  <meta property="og:description" content="When truth becomes scarce, witnesses become infrastructure." />
-  <meta property="og:type" content="website" />
+<style>
+:root {
+  --gold: #f5c46b;
+  --dark: #050505;
+  --glass: rgba(255,255,255,0.06);
+}
 
-  <style>
-    :root{
-      --bg:#05060a;
-      --ink:#e9eefc;
-      --muted:rgba(233,238,252,.72);
-      --faint:rgba(233,238,252,.55);
-      --glass:rgba(14,16,24,.58);
-      --stroke:rgba(255,255,255,.10);
-      --gold:#ffd58a;
-      --gold2:#ffb84d;
-      --violet:#a77bff;
-      --cyan:#65d0ff;
-      --shadow: 0 30px 120px rgba(0,0,0,.65);
-      --radius: 26px;
-    }
+* {
+  box-sizing: border-box;
+  font-family: Inter, system-ui, sans-serif;
+}
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(1200px 900px at 10% 10%, rgba(167,123,255,.18), transparent 55%),
-                  radial-gradient(1000px 800px at 85% 20%, rgba(101,208,255,.12), transparent 55%),
-                  radial-gradient(900px 700px at 55% 85%, rgba(255,184,77,.10), transparent 55%),
-                  var(--bg);
-      color:var(--ink);
-      overflow-x:hidden;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,200,120,0.08), transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(120,180,255,0.06), transparent 60%),
+    #050505;
+  color: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
 
-    /* --- animated cosmic layers --- */
-    .fx, .fx:before, .fx:after{position:fixed; inset:-40px; pointer-events:none; content:""; }
-    .fx{
-      z-index:-5;
-      background:
-        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.45), transparent 60%),
-        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.35), transparent 60%),
-        radial-gradient(2px 2px at 70% 30%, rgba(255,255,255,.35), transparent 60%),
-        radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,.25), transparent 60%);
-      opacity:.35;
-      filter: blur(.1px);
-      animation: drift 18s linear infinite;
-    }
-    .fx:before{
-      z-index:-6;
-      background:
-        radial-gradient(700px 500px at 20% 30%, rgba(167,123,255,.22), transparent 60%),
-        radial-gradient(650px 480px at 80% 20%, rgba(101,208,255,.16), transparent 65%),
-        radial-gradient(800px 650px at 50% 80%, rgba(255,184,77,.14), transparent 60%);
-      filter: blur(18px);
-      animation: pulse 10s ease-in-out infinite;
-      opacity:.9;
-    }
-    .fx:after{
-      z-index:-7;
-      background:
-        radial-gradient(1200px 900px at 55% 35%, rgba(255,255,255,.06), transparent 60%),
-        radial-gradient(900px 700px at 45% 65%, rgba(255,255,255,.04), transparent 60%);
-      filter: blur(40px);
-      opacity:.7;
-      animation: slowspin 40s linear infinite;
-    }
-    @keyframes drift { 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(-20px, 12px,0)} 100%{transform:translate3d(0,0,0)} }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-    @keyframes slowspin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+.container {
+  max-width: 720px;
+  padding: 40px;
+  background: var(--glass);
+  border-radius: 18px;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+  text-align: center;
+  animation: rise 1.2s ease-out;
+}
 
-    /* --- layout --- */
-    .wrap{
-      min-height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:34px 16px;
-    }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-    .stage{
-      width:min(980px, 100%);
-      position:relative;
-    }
+.ghost {
+  font-size: 48px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,0.3));
+}
 
-    /* cinematic border */
-    .frame{
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-      padding:1px;
-      border-radius: calc(var(--radius) + 6px);
-      box-shadow: var(--shadow);
-    }
-    .card{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(14,16,24,.78), rgba(10,11,16,.58));
-      border:1px solid rgba(255,255,255,.08);
-      overflow:hidden;
-      position:relative;
-    }
+h1 {
+  letter-spacing: 3px;
+  margin: 10px 0 6px;
+}
 
-    /* top glow line */
-    .card:before{
-      content:"";
-      position:absolute; left:-20%; right:-20%; top:-50%;
-      height:220px;
-      background: radial-gradient(closest-side, rgba(255,213,138,.22), transparent 72%);
-      filter: blur(12px);
-      transform:translateY(20px);
-      opacity:.9;
-      pointer-events:none;
-    }
+.sub {
+  opacity: 0.7;
+  letter-spacing: 1px;
+  font-size: 12px;
+}
 
-    .inner{
-      padding:28px 22px 20px;
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:18px;
-    }
-    @media (max-width: 860px){
-      .inner{grid-template-columns:1fr; padding:22px 16px}
-    }
+.rule {
+  margin: 24px 0;
+  line-height: 1.6;
+}
 
-    .brand{
-      display:flex;
-      gap:14px;
-      align-items:center;
-    }
-    .sigil{
-      width:54px; height:54px;
-      border-radius: 16px;
-      display:grid; place-items:center;
-      background: radial-gradient(110% 110% at 30% 25%, rgba(255,213,138,.22), rgba(167,123,255,.12), rgba(12,13,18,.65));
-      border:1px solid rgba(255,255,255,.10);
-      box-shadow: 0 18px 50px rgba(0,0,0,.55);
-      position:relative;
-      overflow:hidden;
-    }
-    .sigil:after{
-      content:"";
-      position:absolute; inset:-40%;
-      background: conic-gradient(from 90deg, rgba(255,213,138,.0), rgba(255,213,138,.35), rgba(101,208,255,.18), rgba(167,123,255,.18), rgba(255,213,138,.0));
-      animation: slowspin 14s linear infinite;
-      filter: blur(10px);
-      opacity:.9;
-    }
-    .sigil span{
-      position:relative;
-      z-index:2;
-      font-size:24px;
-      transform: translateY(-1px);
-      text-shadow: 0 0 20px rgba(255,213,138,.55);
-    }
+.rule span {
+  display: block;
+  margin: 6px 0;
+}
 
-    .title{
-      margin:0;
-      font-weight:800;
-      letter-spacing:.03em;
-      line-height:1.06;
-      font-size: clamp(28px, 4.2vw, 48px);
-    }
-    .title .gold{
-      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--cyan));
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
-      text-shadow: 0 0 24px rgba(255,213,138,.18);
-    }
-    .sub{
-      margin:.35rem 0 0;
-      color:var(--muted);
-      font-size: 14px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-    }
+.highlight {
+  color: var(--gold);
+}
 
-    .line{
-      margin:14px 0 0;
-      font-size: 15.5px;
-      color: var(--muted);
-      line-height:1.55;
-      max-width: 62ch;
-    }
-    .axiom{
-      margin:16px 0 0;
-      padding:14px 14px;
-      border-radius: 16px;
-      background: rgba(0,0,0,.22);
-      border:1px solid rgba(255,255,255,.08);
-      color: rgba(233,238,252,.82);
-      line-height:1.55;
-      position:relative;
-      overflow:hidden;
-    }
-    .axiom:before{
-      content:"";
-      position:absolute; inset:-1px;
-      background: radial-gradient(600px 220px at 20% 0%, rgba(255,213,138,.16), transparent 60%),
-                  radial-gradient(520px 240px at 90% 10%, rgba(101,208,255,.12), transparent 65%);
-      opacity:.9;
-      pointer-events:none;
-    }
-    .axiom b{color:var(--ink); position:relative}
-    .axiom span{position:relative}
+button {
+  margin-top: 20px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 40px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
 
-    .pillrow{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin:16px 0 0;
-    }
-    .pill{
-      font-size:12.5px;
-      padding:8px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(233,238,252,.78);
-      letter-spacing:.02em;
-    }
-    .pill strong{
-      color: rgba(255,213,138,.95);
-      font-weight:700;
-    }
+button:hover {
+  background: var(--gold);
+  color: #000;
+  box-shadow: 0 0 20px rgba(245,196,107,0.6);
+}
 
-    /* right column: CTA panel */
-    .panel{
-      border-radius: 22px;
-      border:1px solid rgba(255,255,255,.10);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.18));
-      padding:16px 16px 14px;
-      position:relative;
-      overflow:hidden;
-    }
-    .panel:before{
-      content:"";
-      position:absolute; inset:-40%;
-      background: radial-gradient(closest-side, rgba(255,213,138,.16), transparent 70%),
-                  radial-gradient(closest-side, rgba(167,123,255,.10), transparent 70%);
-      filter: blur(16px);
-      opacity:.95;
-      pointer-events:none;
-    }
-    .panel > *{position:relative}
+.log {
+  margin-top: 28px;
+  font-size: 13px;
+  opacity: 0.75;
+  min-height: 20px;
+}
 
-    .panel h2{
-      margin:0;
-      font-size:16px;
-      letter-spacing:.10em;
-      text-transform:uppercase;
-      color: rgba(233,238,252,.86);
-    }
-    .panel p{
-      margin:10px 0 0;
-      color: rgba(233,238,252,.74);
-      line-height:1.55;
-      font-size:14px;
-    }
-
-    .cta{
-      margin:14px 0 0;
-      display:grid;
-      gap:10px;
-    }
-    .btn{
-      border:0;
-      cursor:pointer;
-      padding:14px 14px;
-      border-radius: 14px;
-      font-weight:800;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      user-select:none;
-    }
-    .btn-primary{
-      color:#101116;
-      background: linear-gradient(90deg, var(--gold), var(--gold2), var(--cyan));
-      box-shadow: 0 18px 60px rgba(255,184,77,.16);
-    }
-    .btn-primary:hover{transform: translateY(-1px); filter: brightness(1.03)}
-    .btn-ghost{
-      color: rgba(233,238,252,.92);
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .btn-ghost:hover{transform: translateY(-1px); filter: brightness(1.05)}
-    .btn small{
-      font-weight:700;
-      opacity:.85;
-      letter-spacing:.06em;
-    }
-
-    .fine{
-      margin-top:12px;
-      font-size:12px;
-      color: rgba(233,238,252,.56);
-      line-height:1.4;
-    }
-
-    .footer{
-      padding:14px 18px 18px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      border-top:1px solid rgba(255,255,255,.08);
-      color: rgba(233,238,252,.55);
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-    }
-    .link{
-      color: rgba(233,238,252,.72);
-      text-decoration:none;
-      border-bottom:1px dashed rgba(255,255,255,.18);
-    }
-    .link:hover{color: rgba(255,213,138,.95); border-bottom-color: rgba(255,213,138,.55)}
-  </style>
+.footer {
+  margin-top: 32px;
+  font-size: 11px;
+  opacity: 0.4;
+}
+</style>
 </head>
 
 <body>
-  <div class="fx"></div>
 
-  <main class="wrap">
-    <section class="stage" aria-label="APEX Ghost Protocol">
-      <div class="frame">
-        <div class="card">
-          <div class="inner">
-            <!-- LEFT -->
-            <div>
-              <div class="brand">
-                <div class="sigil" title="APEX">
-                  <span>👻</span>
-                </div>
-                <div>
-                  <p class="sub">APEX</p>
-                  <h1 class="title">
-                    <span class="gold">GHOST PROTOCOL</span><br/>
-                    <span style="font-weight:720; letter-spacing:.02em;">THE WITNESS NETWORK</span>
-                  </h1>
-                </div>
-              </div>
+<div class="container">
+  <div class="ghost">👻</div>
 
-              <p class="line">
-                When truth becomes scarce, <b>witnesses become infrastructure</b>.
-                Ghost Protocol is a distributed network of <b>human presence, agreement, and proof</b> — designed to be quiet, lightweight, and undeniable.
-              </p>
+  <h1>APEX GHOST PROTOCOL</h1>
+  <div class="sub">THE WITNESS NETWORK</div>
 
-              <div class="axiom">
-                <span><b>No mining.</b> No noise. <b>Just confirmation.</b></span>
-              </div>
+  <div class="rule">
+    <span>When truth becomes scarce,</span>
+    <span class="highlight">witnesses become infrastructure.</span>
+    <br>
+    <span>No mining.</span>
+    <span>No noise.</span>
+    <span class="highlight">Just confirmation.</span>
+  </div>
 
-              <div class="pillrow">
-                <div class="pill"><strong>1 tap</strong> confirmations</div>
-                <div class="pill">human presence proofs</div>
-                <div class="pill">consensus snapshots</div>
-                <div class="pill">timestamped record</div>
-                <div class="pill">boring by design</div>
-              </div>
-            </div>
+  <button onclick="witness()">JOIN AS WITNESS</button>
 
-            <!-- RIGHT -->
-            <aside class="panel" aria-label="Join">
-              <h2>Witness Enrollment</h2>
-              <p>
-                Join the early roster. When the first witness calls go live, you receive:
-                <b>badge access</b>, <b>rules PDF</b>, and the first <b>verification drops</b>.
-              </p>
+  <div class="log" id="log"></div>
 
-              <div class="cta">
-                <!-- Primary: go to your signup form -->
-                <button class="btn btn-primary" id="joinBtn">
-                  <span>Join the Witness Network</span>
-                  <small>→</small>
-                </button>
+  <div class="footer">
+    APEX · Own the Record
+  </div>
+</div>
 
-                <!-- Secondary: copy a “safe to paste” line (useful for Reddit bans) -->
-                <button class="btn btn-ghost" id="copyBtn">
-                  <span>Copy “Search line” for Reddit</span>
-                  <small>⧉</small>
-                </button>
-              </div>
+<script>
+let joined = false;
 
-              <p class="fine">
-                Tip: some subreddits block direct links. Use the “Search line” in posts and drop the link in comments or your profile.
-              </p>
-            </aside>
-          </div>
+function witness() {
+  const log = document.getElementById("log");
 
-          <div class="footer">
-            <span>APEX • Own the record</span>
-            <a class="link" href="https://kawal393.github.io/apex-corporate-translator/" target="_blank" rel="noreferrer">Audit tool</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+  if (!joined) {
+    joined = true;
+    log.innerText = "Witness registered. Presence acknowledged.";
+  } else {
+    log.innerText = "Presence confirmed again. Ledger updated.";
+  }
+}
+</script>
 
-  <script>
-    // 1) Set your signup URL (Tally / Google Form / Gumroad free / Beehiiv, etc.)
-    const SIGNUP_URL = "YOUR_SIGNUP_LINK";
-
-    // 2) The “search line” (for places that ban URLs)
-    const SEARCH_LINE = 'Search: "APEX Ghost Protocol Witness Network"';
-
-    document.getElementById("joinBtn").addEventListener("click", () => {
-      if (!SIGNUP_URL || SIGNUP_URL === "YOUR_SIGNUP_LINK") {
-        // fallback if you forgot to set it
-        alert("Set your signup link first (edit SIGNUP_URL in the code).");
-        return;
-      }
-      window.open(SIGNUP_URL, "_blank", "noopener,noreferrer");
-    });
-
-    document.getElementById("copyBtn").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(SEARCH_LINE);
-        alert("Copied. Paste it in Reddit post text.");
-      }catch(e){
-        // fallback for older browsers
-        const ta = document.createElement("textarea");
-        ta.value = SEARCH_LINE;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-        alert("Copied. Paste it in Reddit post text.");
-      }
-    });
-  </script>
 </body>
 </html>
