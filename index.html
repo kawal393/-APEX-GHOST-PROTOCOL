@@ -9,12 +9,8 @@
   <style>
     :root{
       --bg0:#05070B; --bg1:#070A12;
-      --panel: rgba(255,255,255,.06);
-      --panel2: rgba(255,255,255,.035);
-      --stroke: rgba(255,255,255,.10);
       --text: rgba(255,255,255,.92);
       --muted: rgba(255,255,255,.62);
-      --muted2: rgba(255,255,255,.45);
       --gold:#D6B35A; --gold2:#B99233;
       --blue:#6AA8FF;
       --ok:#34D399; --warn:#FBBF24; --bad:#FB7185;
@@ -26,6 +22,7 @@
 
     *{box-sizing:border-box}
     html,body{height:100%}
+
     body{
       margin:0;
       font-family: var(--sans);
@@ -38,13 +35,9 @@
       overflow-x:hidden;
     }
 
-    /* Keep all UI above effects */
     .wrap{max-width:1120px;margin:0 auto;padding:26px 16px 70px; position:relative; z-index:30;}
 
-    /* === LOGO VEIL (FIXED) ===
-       IMPORTANT: Put apex-sigil.png in the SAME folder as index.html
-       If you placed it in /assets/, change url("apex-sigil.png") to url("assets/apex-sigil.png")
-    */
+    /* ✅ LOGO (ABSOLUTE URL — WORKS EVEN IF IMAGE IS NOT IN THIS REPO) */
     body:before{
       content:"";
       position:fixed;
@@ -52,18 +45,18 @@
       background:
         radial-gradient(circle at 30% 20%, rgba(214,179,90,.12), transparent 45%),
         radial-gradient(circle at 70% 30%, rgba(106,168,255,.10), transparent 45%),
-        url("apex-sigil.png");
+        url("https://kawal393.github.io/apex-corporate-translator/apex-sigil.png");
       background-repeat:no-repeat;
       background-size: 1100px auto;
       background-position: 50% 22%;
-      opacity:.34;                 /* <-- stronger so you SEE it */
+      opacity:.34;
       pointer-events:none;
-      z-index:5;                   /* <-- ABOVE particles */
+      z-index:5;          /* above particles */
       transform: translateZ(0);
       filter: saturate(1.08) contrast(1.05);
     }
 
-    /* Mist film (slightly reduced so logo shows) */
+    /* Mist film */
     body:after{
       content:"";
       position:fixed;
@@ -74,14 +67,14 @@
         linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.34));
       opacity:.45;
       pointer-events:none;
-      z-index:6;                   /* <-- ABOVE logo slightly, but not hiding it */
+      z-index:6;
     }
 
-    /* MOVING PARTICLES CANVAS */
+    /* Moving particles canvas */
     #apexParticles{
       position:fixed;
       inset:0;
-      z-index:4;                   /* <-- BELOW logo */
+      z-index:4;  /* below logo */
       pointer-events:none;
       opacity:.40;
       mix-blend-mode:screen;
@@ -231,8 +224,6 @@
     .k .v{margin-top:8px;font-weight:900}
     .v.dim{color:rgba(255,255,255,.75)}
     .v.ok{color:var(--ok)}
-    .v.warn{color:var(--warn)}
-    .v.bad{color:var(--bad)}
 
     .footer{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.5;padding:0 4px; position:relative; z-index:1;}
     .footer a{color:rgba(214,179,90,.95);text-decoration:none;border-bottom:1px dashed rgba(214,179,90,.35)}
@@ -253,7 +244,6 @@
     }
     @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
 
-    /* Witness log */
     .log{
       margin-top:12px;
       border-radius:14px;
@@ -543,7 +533,6 @@
 </script>
 
 <script>
-/* APEX PARTICLES */
 (() => {
   const canvas = document.getElementById("apexParticles");
   if(!canvas) return;
@@ -557,14 +546,6 @@
   const GOLD = (css.getPropertyValue("--gold").trim() || "#D6B35A");
   const BLUE = (css.getPropertyValue("--blue").trim() || "#6AA8FF");
 
-  const settings = {
-    count: 78,
-    speed: 0.22,
-    linkDist: 150,
-    starSize: 1.35,
-    twinkle: 0.33,
-  };
-
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if(reduce){
     canvas.style.opacity = ".16";
@@ -572,6 +553,8 @@
   }
 
   function rand(min,max){ return min + Math.random()*(max-min); }
+
+  const settings = { count: 78, speed: 0.22, linkDist: 150, starSize: 1.35, twinkle: 0.33 };
 
   function resize(){
     DPR = Math.min(2, window.devicePixelRatio || 1);
@@ -605,13 +588,6 @@
 
   function draw(){
     ctx.clearRect(0,0,W,H);
-
-    const g = ctx.createRadialGradient(W*0.5,H*0.35, 0, W*0.5,H*0.35, Math.max(W,H)*0.9);
-    g.addColorStop(0,"rgba(214,179,90,.05)");
-    g.addColorStop(0.55,"rgba(106,168,255,.035)");
-    g.addColorStop(1,"rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0,0,W,H);
 
     for(let i=0;i<particles.length;i++){
       const p = particles[i];
