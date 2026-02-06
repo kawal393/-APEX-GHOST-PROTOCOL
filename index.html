@@ -38,10 +38,13 @@
       overflow-x:hidden;
     }
 
-    /* Content always above effects */
-    .wrap{max-width:1120px;margin:0 auto;padding:26px 16px 70px; position:relative; z-index:10;}
+    /* Keep all UI above effects */
+    .wrap{max-width:1120px;margin:0 auto;padding:26px 16px 70px; position:relative; z-index:30;}
 
-    /* Logo veil (uses apex-sigil.png if present in same folder) */
+    /* === LOGO VEIL (FIXED) ===
+       IMPORTANT: Put apex-sigil.png in the SAME folder as index.html
+       If you placed it in /assets/, change url("apex-sigil.png") to url("assets/apex-sigil.png")
+    */
     body:before{
       content:"";
       position:fixed;
@@ -53,32 +56,32 @@
       background-repeat:no-repeat;
       background-size: 1100px auto;
       background-position: 50% 22%;
-      opacity:.20;
+      opacity:.34;                 /* <-- stronger so you SEE it */
       pointer-events:none;
-      z-index:1;
+      z-index:5;                   /* <-- ABOVE particles */
       transform: translateZ(0);
-      filter: saturate(1.05) contrast(1.02);
+      filter: saturate(1.08) contrast(1.05);
     }
 
-    /* Mist film */
+    /* Mist film (slightly reduced so logo shows) */
     body:after{
       content:"";
       position:fixed;
       inset:0;
       background:
-        radial-gradient(900px 420px at 50% 15%, rgba(214,179,90,.08), transparent 62%),
-        radial-gradient(900px 520px at 55% 65%, rgba(106,168,255,.06), transparent 62%),
-        linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.40));
-      opacity:.55;
+        radial-gradient(900px 420px at 50% 15%, rgba(214,179,90,.06), transparent 62%),
+        radial-gradient(900px 520px at 55% 65%, rgba(106,168,255,.05), transparent 62%),
+        linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.34));
+      opacity:.45;
       pointer-events:none;
-      z-index:2;
+      z-index:6;                   /* <-- ABOVE logo slightly, but not hiding it */
     }
 
-    /* REAL MOVING PARTICLES CANVAS */
+    /* MOVING PARTICLES CANVAS */
     #apexParticles{
       position:fixed;
       inset:0;
-      z-index:3;
+      z-index:4;                   /* <-- BELOW logo */
       pointer-events:none;
       opacity:.40;
       mix-blend-mode:screen;
@@ -113,9 +116,7 @@
       box-shadow: 0 12px 26px rgba(0,0,0,.30);
       font-size:12px; user-select:none;
       text-decoration:none;
-      position:relative; z-index:1;
     }
-    .dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(52,211,153,.12)}
     .mono{font-family:var(--mono)}
     .gold{color:rgba(214,179,90,.95);font-weight:900}
 
@@ -163,7 +164,6 @@
       overflow:hidden;
       transform: translateZ(0);
     }
-    /* 3D edge */
     .card:before{
       content:"";
       position:absolute; inset:0;
@@ -237,7 +237,23 @@
     .footer{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.5;padding:0 4px; position:relative; z-index:1;}
     .footer a{color:rgba(214,179,90,.95);text-decoration:none;border-bottom:1px dashed rgba(214,179,90,.35)}
 
-    /* NEW: Witness log */
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.14);
+      font-size:12px;
+      color:rgba(255,255,255,.82);
+    }
+    .pulse{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(52,211,153,.12);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+
+    /* Witness log */
     .log{
       margin-top:12px;
       border-radius:14px;
@@ -255,15 +271,8 @@
     .logHead .t{
       font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.58)
     }
-    .logBody{
-      max-height: 240px;
-      overflow:auto;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:12.5px;
-    }
+    .logBody{max-height:240px; overflow:auto;}
+    table{width:100%; border-collapse:collapse; font-size:12.5px;}
     thead th{
       text-align:left;
       font-size:11px;
@@ -284,28 +293,10 @@
       word-break:break-word;
     }
     tbody tr:hover{background: rgba(106,168,255,.06);}
-
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.14);
-      font-size:12px;
-      color:rgba(255,255,255,.82);
-    }
-    .pulse{
-      width:8px;height:8px;border-radius:50%;
-      background: var(--ok);
-      box-shadow: 0 0 0 4px rgba(52,211,153,.12);
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
   </style>
 </head>
 
 <body>
-
-  <!-- MOVING PARTICLES LAYER -->
   <canvas id="apexParticles" aria-hidden="true"></canvas>
 
   <div class="wrap">
@@ -366,7 +357,6 @@
           <div class="tag" id="hint">Validation required. Registration creates a durable entry.</div>
         </div>
 
-        <!-- NEW: Witness log + export -->
         <div class="log">
           <div class="logHead">
             <div class="t">Witness Log (local)</div>
@@ -456,7 +446,6 @@
     localStorage.setItem(KEY, JSON.stringify(data));
   }
 
-  // Simple hash to avoid showing raw emails on-screen (not security, just UX)
   function hashEmail(email){
     let h = 2166136261;
     for(let i=0;i<email.length;i++){
@@ -554,7 +543,7 @@
 </script>
 
 <script>
-/* APEX PARTICLES — same engine as Translator so both match */
+/* APEX PARTICLES */
 (() => {
   const canvas = document.getElementById("apexParticles");
   if(!canvas) return;
@@ -624,7 +613,6 @@
     ctx.fillStyle = g;
     ctx.fillRect(0,0,W,H);
 
-    // Links
     for(let i=0;i<particles.length;i++){
       const p = particles[i];
       for(let j=i+1;j<particles.length;j++){
@@ -646,7 +634,6 @@
       }
     }
 
-    // Stars
     for(const p of particles){
       p.phase += 0.02;
       const tw = 1 + Math.sin(p.phase)*settings.twinkle;
